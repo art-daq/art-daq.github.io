@@ -23,6 +23,7 @@ for REPO in "${packages_with_ci[@]}"; do
   ISSUES_URL=$(echo "https://github.com/art-daq/$REPO/issues")
   OPEN_PRS=$(gh pr list -R "$FULL_NAME" --state open --limit 1000 --json number --jq 'length' || echo 0)
   PRS_URL=$(echo "https://github.com/art-daq/$REPO/pulls")
+  BUILD_DEVELOP_STATUS="{}"
 
   if [[ "$REPO" =~ "artdaq" ]] || [[ "$REPO" =~ "trace" ]]; then
     # Get most recent single-repo CI build status
@@ -33,6 +34,8 @@ for REPO in "${packages_with_ci[@]}"; do
     BUILD_DEVELOP_STATUS=$(gh run list -R "$FULL_NAME" --limit 1 --json status,conclusion,name,url --workflow otsdaq-develop-cpp-ci.yml -q '.[0]')
     echo $?
   fi
+
+  echo $BUILD_DEVELOP_STATUS
 
   # Prepare JSON fragment
   JSON_ENTRY=$(jq -n \
