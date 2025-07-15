@@ -65,7 +65,7 @@ jobs:
         cp -r otsdaq_lcov_report ci-dashboard/scripts/github-ci/site/otsdaq_code_coverage
         cd ci-dashboard/scripts/github-ci/
         ./collect-ci-metrics.sh
-        # cat ci_summary.json
+        cat ci_summary.json
         python generate_ci_site.py --json_input ci_summary.json
     - name: Upload pages artifact
       uses: actions/upload-pages-artifact@v3

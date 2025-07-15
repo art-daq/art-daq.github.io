@@ -19,7 +19,7 @@ def generate_site(json_input_path):
     total_repos = len(repos)
     passing_repos = sum(
         1 for repo in repos
-        if repo.get("build-develop", {}).get("conclusion") == "success"
+        if repo.get("build_develop", {}).get("conclusion") == "success"
     )
 
     passing_percentage = round((passing_repos / total_repos) * 100, 1) if total_repos else 0

@@ -28,7 +28,7 @@
     <p>
         <strong class="{{ 'status-success' if passing_percentage == 100 else 'status-failure' }}">
             {{ passing_percentage }}%
-        </strong> of repos are passing their CI builds.
+        </strong> of repos are passing their Develop CI builds.
     </p>
 </div>
 
@@ -38,7 +38,11 @@
             <th>Repository</th>
             <th>Open Issues</th>
             <th>Open PRs</th>
-            <th>Workflow Status</th>
+            <th>Develop Build Status</th>
+            <th>Single-Pkg Build Status</th>
+            <th>Single-Pkg Status</th>
+            <th>Clang-Format Status</th>
+            <th>Git Whitespace Check Status</th>
         </tr>
     </thead>
     <tbody>
@@ -54,6 +58,34 @@
                     </span>
                 </a>
             </td>
+            <td>
+                <a href="{{ repo.build_single.url }}">
+                    <span class="status-{{ repo.build_single.conclusion }}">
+                        {{ repo.build_single.conclusion | capitalize }}
+                    </span>
+                </a>
+            </td>
+            <td>
+                <a href="{{ repo.test_single.url }}">
+                    <span class="status-{{ repo.test_single.conclusion }}">
+                        {{ repo.test_single.conclusion | capitalize }}
+                    </span>
+                </a>
+            </td>
+            <td>
+                <a href="{{ repo.format.url }}">
+                    <span class="status-{{ repo.format.conclusion }}">
+                        {{ repo.format.conclusion | capitalize }}
+                    </span>
+                </a>
+            </td>
+            <td>
+                <a href="{{ repo.whitespace.url }}">
+                    <span class="status-{{ repo.whitespace.conclusion }}">
+                        {{ repo.whitespace.conclusion | capitalize }}
+                    </span>
+                </a>
+            </td>
         </tr>
         {% endfor %}
     </tbody>
@@ -62,9 +94,6 @@
           <td><strong>Total</strong></td>
           <td><strong>{{ total_issues }}</strong></td>
           <td><strong>{{ total_prs }}</strong></td>
-          <td>
-              <strong>{{ passing_percentage }}% passing</strong>
-          </td>
       </tr>
   </tfoot>
 </table>

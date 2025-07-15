@@ -24,18 +24,26 @@ for REPO in "${packages_with_ci[@]}"; do
   OPEN_PRS=$(gh pr list -R "$FULL_NAME" --state open --limit 1000 --json number --jq 'length' || echo 0)
   PRS_URL=$(echo "https://github.com/art-daq/$REPO/pulls")
   BUILD_DEVELOP_STATUS="{}"
+  BUILD_SINGLE_STATUS="{}"
+  TEST_SINGLE_STATUS="{}"
+  FORMAT_STATUS="{}"
+  WHITESPACE_STATUS="{}"
 
   if [[ "$REPO" =~ "artdaq" ]] || [[ "$REPO" =~ "trace" ]]; then
     # Get most recent single-repo CI build status
     BUILD_DEVELOP_STATUS=$(gh run list -R "$FULL_NAME" --limit 1 --json status,conclusion,name,url --workflow artdaq-develop-cpp-ci.yml -q '.[0]')
-    echo $?
+    BUILD_SINGLE_STATUS=$(gh run list -R "$FULL_NAME" --limit 1 --json status,conclusion,name,url --workflow artdaq-build-single-pkg.yml -q '.[0]')
+    TEST_SINGLE_STATUS=$(gh run list -R "$FULL_NAME" --limit 1 --json status,conclusion,name,url --workflow artdaq-test-single-pkg.yml -q '.[0]')
+    FORMAT_STATUS=$(gh run list -R "$FULL_NAME" --limit 1 --json status,conclusion,name,url --workflow artdaq-format-single-pkg.yml -q '.[0]')
+    WHITESPACE_STATUS=$(gh run list -R "$FULL_NAME" --limit 1 --json status,conclusion,name,url --workflow git-whitespace.yml -q '.[0]')
   else
     # Get most recent single-repo CI build status
     BUILD_DEVELOP_STATUS=$(gh run list -R "$FULL_NAME" --limit 1 --json status,conclusion,name,url --workflow otsdaq-develop-cpp-ci.yml -q '.[0]')
-    echo $?
+    BUILD_SINGLE_STATUS=$(gh run list -R "$FULL_NAME" --limit 1 --json status,conclusion,name,url --workflow otsdaq-build-single-pkg.yml -q '.[0]')
+    TEST_SINGLE_STATUS=$(gh run list -R "$FULL_NAME" --limit 1 --json status,conclusion,name,url --workflow otsdaq-test-single-pkg.yml -q '.[0]')
+    FORMAT_STATUS=$(gh run list -R "$FULL_NAME" --limit 1 --json status,conclusion,name,url --workflow otsdaq-format-single-pkg.yml -q '.[0]')
+    WHITESPACE_STATUS=$(gh run list -R "$FULL_NAME" --limit 1 --json status,conclusion,name,url --workflow git-whitespace.yml -q '.[0]')
   fi
-
-  echo $BUILD_DEVELOP_STATUS
 
   # Prepare JSON fragment
   JSON_ENTRY=$(jq -n \
@@ -45,6 +53,10 @@ for REPO in "${packages_with_ci[@]}"; do
     --argjson prs "$OPEN_PRS" \
     --arg prs_url "$PRS_URL" \
     --argjson build_develop "$BUILD_DEVELOP_STATUS" \
+    --argjson build_single "$BUILD_SINGLE_STATUS" \
+    --argjson test_single "$TEST_SINGLE_STATUS" \
+    --argjson format "$FORMAT_STATUS" \
+    --argjson whitespace "$WHITESPACE_STATUS" \
     '{
       repo: $repo,
       open_issues: $issues,
@@ -52,6 +64,10 @@ for REPO in "${packages_with_ci[@]}"; do
       open_prs: $prs,
       prs_url: $prs_url,
       build_develop: $build_develop,
+      build_single: $build_single,
+      test_single: $test_single,
+      format: $format,
+      whitespace: $whitespace,
     }')
   retval=$?
 
