@@ -24,7 +24,7 @@ def generate_site(json_input_path):
 
     passing_percentage = round((passing_repos / total_repos) * 100, 1) if total_repos else 0
 
-    last_updated=datetime.utcnow().strftime("%Y-%m-%d %H:%M UTC")
+    last_updated=datetime.now(datetime.UTC).strftime("%Y-%m-%d %H:%M UTC")
     workflow_badges = [
     {
         "image": "https://github.com/art-daq/.github/actions/workflows/build-and-publish-doxygen.yml/badge.svg",
