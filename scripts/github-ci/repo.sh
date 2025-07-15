@@ -13,7 +13,7 @@ fi
 
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 
-packges_with_ci=(
+packages_with_ci=(
     "trace"
     "artdaq-core"
     "artdaq-utilities"

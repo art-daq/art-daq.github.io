@@ -3,7 +3,7 @@ import argparse
 import json
 from jinja2 import Environment, FileSystemLoader
 from pathlib import Path
-from datetime import datetime
+from datetime import datetime, UTC
 
 def generate_site(json_input_path):
     """Render html files from templates to generate the site."""
