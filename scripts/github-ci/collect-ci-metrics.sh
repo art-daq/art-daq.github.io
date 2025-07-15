@@ -24,7 +24,7 @@ for REPO in "${packages_with_ci[@]}"; do
   OPEN_PRS=$(gh pr list -R "$FULL_NAME" --state open --limit 1000 --json number --jq 'length' || echo 0)
   PRS_URL=$(echo "https://github.com/art-daq/$REPO/pulls")
 
-  if [[ "$REPO" =~ "artdaq" ]] || [ "$REPO" == "art-daq/trace" ]; then
+  if [[ "$REPO" =~ "artdaq" ]] || [[ "$REPO" =~ "trace" ]]; then
     # Get most recent single-repo CI build status
     BUILD_DEVELOP_STATUS=$(gh run list -R "$FULL_NAME" --limit 1 --json status,conclusion,name,url --workflow artdaq-develop-cpp-ci.yml -q '.[0]')
     echo $?
