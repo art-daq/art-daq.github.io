@@ -44,6 +44,7 @@ jobs:
         github-token: ${{ secrets.BOT_CI_ISSUES }}
         path: ${{ steps.set_paths.outputs.artdaq_lcov_html_report_path }}
         run-id: ${{ steps.run_ids.outputs.artdaq_lcov_id }} 
+        repository: "art-daq/.github"
     - name: Download otsdaq lcov html report
       id: otsdaq_download_lcov
       uses: actions/download-artifact@v4
@@ -52,6 +53,7 @@ jobs:
         github-token: ${{ secrets.BOT_CI_ISSUES }}
         path: ${{ steps.set_paths.outputs.otsdaq_lcov_html_report_path }}
         run-id: ${{ steps.run_ids.outputs.otsdaq_lcov_id }} 
+        repository: "art-daq/.github"
   build_ci_dashboard:
     runs-on: ubuntu-latest
     needs: download_artifacts
