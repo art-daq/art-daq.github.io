@@ -12,6 +12,8 @@ jobs:
     outputs:
       artdaq_lcov_html_report_path: ${{ steps.set_paths.outputs.artdaq_lcov_html_report_path }}
       otsdaq_lcov_html_report_path: ${{ steps.set_paths.outputs.otsdaq_lcov_html_report_path }}
+      artdaq_doxy_html_path: ${{ steps.set_paths.outputs.artdaq_doxy_html_path }}
+      otsdaq_doxy_html_path: ${{ steps.set_paths.outputs.otsdaq_doxy_html_path }}
     defaults:
       run: 
         shell: bash
@@ -23,9 +25,19 @@ jobs:
       run : |
         echo "artdaq_lcov_html_report_path=artdaq_lcov_report" >> "$GITHUB_OUTPUT"
         echo "otsdaq_lcov_html_report_path=otsdaq_lcov_report" >> "$GITHUB_OUTPUT"
+        echo "artdaq_doxy_html_path=artdaq_doxygen" >> "$GITHUB_OUTPUT"
+        echo "otsdaq_doxy_html_path=otsdaq_doxygen" >> "$GITHUB_OUTPUT"
     - name: Get workflow run IDs
       id: run_ids
       run: |
+        artdaq_doxy_id=$(gh run list --repo art-daq/artdaq \
+                              --workflow "artdaq-develop-cpp-ci.yml" \
+                              --limit 1 \
+                              --json databaseId --jq '.[0].databaseId')
+        otsdaq_doxy_id=$(gh run list --repo art-daq/otsdaq \
+                                   --workflow "otsdaq-develop-cpp-ci.yml" \
+                                   --limit 1 \
+                                   --json databaseId --jq '.[0].databaseId')
         artdaq_lcov_id=$(gh run list --repo art-daq/.github \
                               --workflow "Create artdaq LCOV coverage report" \
                               --limit 1 \
@@ -34,8 +46,29 @@ jobs:
                               --workflow "Create otsdaq LCOV coverage report" \
                               --limit 1 \
                               --json databaseId --jq '.[0].databaseId')
+        echo "artdaq_doxy_id=$artdaq_doxy_id" | tee -a "$GITHUB_OUTPUT"
+        echo "otsdaq_doxy_id=$otsdaq_doxy_id" | tee -a "$GITHUB_OUTPUT"
         echo "artdaq_lcov_id=$artdaq_lcov_id" | tee -a "$GITHUB_OUTPUT"
         echo "otsdaq_lcov_id=$otsdaq_lcov_id" | tee -a "$GITHUB_OUTPUT"
+        
+    - name: Fetch artdaq Doxygen docs
+      uses: actions/download-artifact@v4
+      with:
+        name: doxygen
+        github-token: ${{ secrets.BOT_CI_ISSUES }}
+        repository: art-daq/artdaq
+        path: ${{ steps.set_paths.outputs.artdaq_doxy_html_path }} 
+        run-id: ${{ steps.run_ids.outputs.artdaq_doxy_id }}
+
+    - name: Fetch otsdaq Doxygen docs
+      uses: actions/download-artifact@v4
+      with:
+        name: doxygen
+        github-token: ${{ secrets.BOT_CI_ISSUES }}
+        repository: art-daq/otsdaq
+        run-id: ${{ steps.run_ids.outputs.otsdaq_doxy_id }}
+        path: ${{ steps.set_paths.outputs.otsdaq_doxy_html_path }} 
+
     - name: Download artdaq lcov html report
       id: artdaq_download_lcov
       uses: actions/download-artifact@v4
@@ -61,11 +94,14 @@ jobs:
     - name: Copy artifacts and generate dashboard
       run: |
         mkdir -p ci-dashboard/scripts/github-ci/site
-        cp -r artdaq_lcov_report ci-dashboard/scripts/github-ci/site/artdaq_code_coverage
-        cp -r otsdaq_lcov_report ci-dashboard/scripts/github-ci/site/otsdaq_code_coverage
+        cp -r ${{ steps.set_paths.outputs.artdaq_lcov_html_report_path }} ci-dashboard/scripts/github-ci/site/artdaq_code_coverage
+        cp -r ${{ steps.set_paths.outputs.otsdaq_lcov_html_report_path }} ci-dashboard/scripts/github-ci/site/otsdaq_code_coverage
+        cp -r ${{ steps.set_paths.outputs.artdaq_doxy_html_path }} ci-dashboard/scripts/github-ci/site/artdaq_doxygen
+        cp -r ${{ steps.set_paths.outputs.otsdaq_doxy_html_path }} ci-dashboard/scripts/github-ci/site/otsdaq_doxygen
         cd ci-dashboard/scripts/github-ci/
         ./collect-ci-metrics.sh
-        # cat ci_summary.json
+        echo "CI Summary JSON:"
+        cat ci_summary.json
         python generate_ci_site.py --json_input ci_summary.json
     - name: Upload pages artifact
       uses: actions/upload-pages-artifact@v3

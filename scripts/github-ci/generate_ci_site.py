@@ -27,10 +27,6 @@ def generate_site(json_input_path):
     last_updated=datetime.now(UTC).strftime("%Y-%m-%d %H:%M UTC")
     workflow_badges = [
     {
-        "image": "https://github.com/art-daq/.github/actions/workflows/build-and-publish-doxygen.yml/badge.svg",
-        "link": "https://github.com/art-daq/.github/actions/workflows/build-and-publish-doxygen.yml",
-        "alt": "Build Doxygen and publish to GitHub pages"},
-    {
         "image": "https://github.com/art-daq/.github/actions/workflows/otsdaq-lcov.yml/badge.svg",
         "link": "https://github.com/art-daq/.github/actions/workflows/otsdaq-lcov.yml",
         "alt": "Create otsdaq LCOV coverage report"},
@@ -59,9 +55,6 @@ def generate_site(json_input_path):
         "total_issues": total_issues,
         "total_prs": total_prs,
         "passing_percentage": passing_percentage,
-        "links": {
-            "doxygen": "https://art-daq.github.io/.github/",
-        },
         "workflow_badges": workflow_badges,
     }
 
