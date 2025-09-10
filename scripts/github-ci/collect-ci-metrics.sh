@@ -31,18 +31,18 @@ for REPO in "${packages_with_ci[@]}"; do
 
   if [[ "$REPO" =~ "artdaq" ]] || [[ "$REPO" =~ "trace" ]]; then
     # Get most recent single-repo CI build status
-    BUILD_DEVELOP_STATUS=$(gh run list -R "$FULL_NAME" --limit 1 --json status,conclusion,name,url --workflow artdaq-develop-cpp-ci.yml -q '.[0]')
-    BUILD_SINGLE_STATUS=$(gh run list -R "$FULL_NAME" --limit 1 --json status,conclusion,name,url --workflow artdaq-build-single-pkg.yml -q '.[0]')
-    TEST_SINGLE_STATUS=$(gh run list -R "$FULL_NAME" --limit 1 --json status,conclusion,name,url --workflow artdaq-test-single-pkg.yml -q '.[0]')
-    FORMAT_STATUS=$(gh run list -R "$FULL_NAME" --limit 1 --json status,conclusion,name,url --workflow artdaq-format-single-pkg.yml -q '.[0]')
-    WHITESPACE_STATUS=$(gh run list -R "$FULL_NAME" --limit 1 --json status,conclusion,name,url --workflow git-whitespace.yml -q '.[0]')
+    BUILD_DEVELOP_STATUS=$(gh run list -R "$FULL_NAME" --limit 1 --json attempt,conclusion,createdAt,databaseId,displayTitle,event,headBranch,headSha,name,number,startedAt,status,updatedAt,url,workflowDatabaseId,workflowName --workflow artdaq-develop-cpp-ci.yml -q '.[0]')
+    BUILD_SINGLE_STATUS=$(gh run list -R "$FULL_NAME" --limit 1 --json status,conclusion,name,url,startedAt --workflow artdaq-build-single-pkg.yml -q '.[0]')
+    TEST_SINGLE_STATUS=$(gh run list -R "$FULL_NAME" --limit 1 --json status,conclusion,name,url,startedAt --workflow artdaq-test-single-pkg.yml -q '.[0]')
+    FORMAT_STATUS=$(gh run list -R "$FULL_NAME" --limit 1 --json status,conclusion,name,url,startedAt --workflow artdaq-format-single-pkg.yml -q '.[0]')
+    WHITESPACE_STATUS=$(gh run list -R "$FULL_NAME" --limit 1 --json status,conclusion,name,url,startedAt --workflow git-whitespace.yml -q '.[0]')
   else
     # Get most recent single-repo CI build status
-    BUILD_DEVELOP_STATUS=$(gh run list -R "$FULL_NAME" --limit 1 --json status,conclusion,name,url --workflow otsdaq-develop-cpp-ci.yml -q '.[0]')
-    BUILD_SINGLE_STATUS=$(gh run list -R "$FULL_NAME" --limit 1 --json status,conclusion,name,url --workflow otsdaq-build-single-pkg.yml -q '.[0]')
-    TEST_SINGLE_STATUS=$(gh run list -R "$FULL_NAME" --limit 1 --json status,conclusion,name,url --workflow otsdaq-test-single-pkg.yml -q '.[0]')
-    FORMAT_STATUS=$(gh run list -R "$FULL_NAME" --limit 1 --json status,conclusion,name,url --workflow otsdaq-format-single-pkg.yml -q '.[0]')
-    WHITESPACE_STATUS=$(gh run list -R "$FULL_NAME" --limit 1 --json status,conclusion,name,url --workflow git-whitespace.yml -q '.[0]')
+    BUILD_DEVELOP_STATUS=$(gh run list -R "$FULL_NAME" --limit 1 --json status,conclusion,name,url,startedAt --workflow otsdaq-develop-cpp-ci.yml -q '.[0]')
+    BUILD_SINGLE_STATUS=$(gh run list -R "$FULL_NAME" --limit 1 --json status,conclusion,name,url,startedAt --workflow otsdaq-build-single-pkg.yml -q '.[0]')
+    TEST_SINGLE_STATUS=$(gh run list -R "$FULL_NAME" --limit 1 --json status,conclusion,name,url,startedAt --workflow otsdaq-test-single-pkg.yml -q '.[0]')
+    FORMAT_STATUS=$(gh run list -R "$FULL_NAME" --limit 1 --json status,conclusion,name,url,startedAt --workflow otsdaq-format-single-pkg.yml -q '.[0]')
+    WHITESPACE_STATUS=$(gh run list -R "$FULL_NAME" --limit 1 --json status,conclusion,name,url,startedAt --workflow git-whitespace.yml -q '.[0]')
   fi
 
   # Prepare JSON fragment
