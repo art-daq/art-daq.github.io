@@ -6,7 +6,7 @@ from pathlib import Path
 from datetime import datetime, UTC
 
 def format_datetime(value):
-    return datetiem.fromisoformat(value)
+    return datetime.fromisoformat(value)
 
 def get_time_class(time_started):
     dtime_started = format_datetime(time_started)
