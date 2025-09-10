@@ -70,6 +70,12 @@
                         {{ repo.build_single.conclusion | capitalize }}
                     </span>
                 </a>
+                <span class="duration-{{repo.build_single.createdAt | get_duration_class(repo.build_single.updatedAt)}}">
+                    {{repo.build_single.createdAt | format_duration(repo.build_single.updatedAt)}}
+                </span>
+                <span class="duration-{{repo.build_single.createdAt | get_time_class}}">
+                    {{repo.build_single.createdAt | format_time}}
+                </span>
             </td>
             <td>
                 <a href="{{ repo.test_single.url }}">
@@ -77,6 +83,12 @@
                         {{ repo.test_single.conclusion | capitalize }}
                     </span>
                 </a>
+                <span class="duration-{{repo.test_single.createdAt | get_duration_class(repo.test_single.updatedAt)}}">
+                    {{repo.test_single.createdAt | format_duration(repo.test_single.updatedAt)}}
+                </span>
+                <span class="duration-{{repo.test_single.createdAt | get_time_class}}">
+                    {{repo.test_single.createdAt | format_time}}
+                </span>
             </td>
             <td>
                 <a href="{{ repo.format.url }}">
@@ -84,6 +96,12 @@
                         {{ repo.format.conclusion | capitalize }}
                     </span>
                 </a>
+                <span class="duration-{{repo.format.createdAt | get_duration_class(repo.format.updatedAt)}}">
+                    {{repo.format.createdAt | format_duration(repo.format.updatedAt)}}
+                </span>
+                <span class="duration-{{repo.format.createdAt | get_time_class}}">
+                    {{repo.format.createdAt | format_time}}
+                </span>
             </td>
             <td>
                 <a href="{{ repo.whitespace.url }}">
@@ -91,6 +109,12 @@
                         {{ repo.whitespace.conclusion | capitalize }}
                     </span>
                 </a>
+                <span class="duration-{{repo.whitespace.createdAt | get_duration_class(repo.whitespace.updatedAt)}}">
+                    {{repo.whitespace.createdAt | format_duration(repo.whitespace.updatedAt)}}
+                </span>
+                <span class="duration-{{repo.whitespace.createdAt | get_time_class}}">
+                    {{repo.whitespace.createdAt | format_time}}
+                </span>
             </td>
         </tr>
         {% endfor %}

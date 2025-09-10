@@ -41,10 +41,10 @@ def format_duration(time_started, time_ended):
     dtime_ended = format_datetime(time_ended)
     diff = dtime_ended - dtime_started
     if diff.total_seconds() < 300:
-        return f"{diff.total_seconds()} s"
+        return f"in {diff.total_seconds()} s"
     if diff.total_seconds() < 3600:
-        return f"{diff.total_seconds() / 60.0} m"
-    return f"{diff.total_seconds() / 3600.0} h"
+        return f"in {diff.total_seconds() / 60.0:2f} m"
+    return f"in {diff.total_seconds() / 3600.0:2f} h"
 
 def generate_site(json_input_path):
     """Render html files from templates to generate the site."""
