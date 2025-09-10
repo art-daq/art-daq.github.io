@@ -57,6 +57,12 @@
                         {{ repo.build_develop.conclusion | capitalize }}
                     </span>
                 </a>
+                <span class="duration-{{repo.build_develop.createdAt | get_duration_class(repo.build_develop.updatedAt)}}">
+                    {{repo.build_develop.createdAt | format_duration(repo.build_develop.updatedAt)}}
+                </span>
+                <span class="duration-{{repo.build_develop.createdAt | get_time_class}}">
+                    {{repo.build_develop.createdAt | format_time}}
+                </span>
             </td>
             <td>
                 <a href="{{ repo.build_single.url }}">

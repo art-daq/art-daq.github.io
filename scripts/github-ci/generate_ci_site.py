@@ -5,12 +5,59 @@ from jinja2 import Environment, FileSystemLoader
 from pathlib import Path
 from datetime import datetime, UTC
 
+def format_datetime(value):
+    return datetiem.fromisoformat(value)
+
+def get_time_class(time_started):
+    dtime_started = format_datetime(time_started)
+    diff = datetime.now() - dtime_started
+    if diff.total_seconds() < 3600 * 24:
+        return "short"
+    if diff.total_seconds() < 3600 * 24 * 7:
+        return "medium"
+    return "long"
+
+def format_time(time_started):
+    dtime_started = format_datetime(time_started)
+    diff = datetime.now() - dtime_started
+    if diff.total_seconds() < 3600 * 24:
+        return "today"
+    if diff.total_seconds() < 3600 * 24 * 7:
+        return "this week"
+    return "long ago"
+
+def get_duration_class(time_started, time_ended):
+    dtime_started = format_datetime(time_started)
+    dtime_ended = format_datetime(time_ended)
+    diff = dtime_ended - dtime_started
+    if diff.total_seconds() < 300:
+        return "short"
+    if diff.total_seconds() < 3600:
+        return "medium"
+    return "long"
+
+def format_duration(time_started, time_ended):
+    dtime_started = format_datetime(time_started)
+    dtime_ended = format_datetime(time_ended)
+    diff = dtime_ended - dtime_started
+    if diff.total_seconds() < 300:
+        return f"{diff.total_seconds()} s"
+    if diff.total_seconds() < 3600:
+        return f"{diff.total_seconds() / 60.0} m"
+    return f"{diff.total_seconds() / 3600.0} h"
+
 def generate_site(json_input_path):
     """Render html files from templates to generate the site."""
     with open(json_input_path, 'r') as f:
         repos = json.load(f)
 
     env = Environment(loader=FileSystemLoader("templates"))
+    env.filters["format_datetime"] = format_datetime
+    env.filters["get_time_class"] = get_time_class
+    env.filters["format_time"] = format_time
+    env.filters["get_duration_class"] = get_duration_class
+    env.filters["format_duration"] = format_duration
+
     index_template = env.get_template("index_template.html")
 
     total_issues = sum(repo["open_issues"] for repo in repos)

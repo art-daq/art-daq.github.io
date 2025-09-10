@@ -84,3 +84,15 @@ a:hover {
 .status-error {
     color: darkorange;
 }
+
+.duration-short {
+    color: green;
+}
+
+.duration-medium {
+    color: yellow;
+}
+
+.duration-long {
+    color: red;
+}
