@@ -10,7 +10,7 @@ def format_datetime(value):
 
 def get_time_class(time_started):
     dtime_started = format_datetime(time_started)
-    diff = datetime.now() - dtime_started
+    diff = datetime.now(UTC) - dtime_started
     if diff.total_seconds() < 3600 * 24:
         return "short"
     if diff.total_seconds() < 3600 * 24 * 7:
@@ -19,7 +19,7 @@ def get_time_class(time_started):
 
 def format_time(time_started):
     dtime_started = format_datetime(time_started)
-    diff = datetime.now() - dtime_started
+    diff = datetime.now(UTC) - dtime_started
     if diff.total_seconds() < 3600 * 24:
         return "today"
     if diff.total_seconds() < 3600 * 24 * 7:
