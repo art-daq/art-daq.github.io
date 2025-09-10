@@ -43,8 +43,8 @@ def format_duration(time_started, time_ended):
     if diff.total_seconds() < 300:
         return f"in {diff.total_seconds()} s"
     if diff.total_seconds() < 3600:
-        return f"in {diff.total_seconds() / 60.0:2f} m"
-    return f"in {diff.total_seconds() / 3600.0:2f} h"
+        return f"in {diff.total_seconds() / 60.0:.2f} m"
+    return f"in {diff.total_seconds() / 3600.0:.2f} h"
 
 def generate_site(json_input_path):
     """Render html files from templates to generate the site."""
