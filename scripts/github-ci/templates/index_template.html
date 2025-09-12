@@ -48,7 +48,7 @@
     <tbody>
         {% for repo in repos %}
         <tr>
-            <td><a href="https://github.com/art-daq/{{ repo.repo }}">{{ repo.repo }}</a></td>
+            <td><a href="https://github.com/art-daq/{{ repo.repo }}">{{ repo.repo }}</a>{% if repo.repo_info.isPrivate %}<span class="duration-long">(priv)</span>{% endif %}{{repo.repo_info.updatedAt | format_time}}</td>
             <td><a href="https://github.com/art-daq/{{ repo.repo }}/issues">{{ repo.open_issues }}</a></td>
             <td><a href="https://github.com/art-daq/{{ repo.repo }}/pulls">{{ repo.open_prs }}</a></td>
             <td>

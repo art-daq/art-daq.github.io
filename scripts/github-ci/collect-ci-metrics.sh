@@ -23,7 +23,7 @@ for REPO in "${packages_with_ci[@]}"; do
   ISSUES_URL=$(echo "https://github.com/art-daq/$REPO/issues")
   OPEN_PRS=$(gh pr list -R "$FULL_NAME" --state open --limit 1000 --json number --jq 'length' || echo 0)
   PRS_URL=$(echo "https://github.com/art-daq/$REPO/pulls")
-  COMMIT_INFO=$(gh repo view "$FULL_NAME" --json defaultBranchRef,isPrivate,pushedAt,updatedAt)
+  REPO_INFO=$(gh repo view "$FULL_NAME" --json isPrivate,updatedAt)
   BUILD_DEVELOP_STATUS="{}"
   BUILD_SINGLE_STATUS="{}"
   TEST_SINGLE_STATUS="{}"
@@ -49,7 +49,7 @@ for REPO in "${packages_with_ci[@]}"; do
   # Prepare JSON fragment
   JSON_ENTRY=$(jq -n \
     --arg repo "$REPO" \
-    --argjson commit_info "$COMMIT_INFO" \
+    --argjson repo_info "$REPO_INFO" \
     --argjson issues "$OPEN_ISSUES" \
     --arg issues_url "$ISSUES_URL" \
     --argjson prs "$OPEN_PRS" \
@@ -61,7 +61,7 @@ for REPO in "${packages_with_ci[@]}"; do
     --argjson whitespace "$WHITESPACE_STATUS" \
     '{
       repo: $repo,
-      commit_info: $commit_info,
+      repo_info: $repo_info,
       open_issues: $issues,
       issues_url: $issues_url,
       open_prs: $prs,
