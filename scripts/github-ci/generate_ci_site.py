@@ -36,7 +36,9 @@ def get_duration_class(time_started, time_ended):
         return "short"
     if diff.total_seconds() < 3600:
         return "medium"
-    return "long"
+    if diff.total_seconds() < 3600 * 24 * 30:
+        return "long"
+    return "verylong"
 
 def format_duration(time_started, time_ended):
     dtime_started = format_datetime(time_started)

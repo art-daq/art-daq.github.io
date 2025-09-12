@@ -90,9 +90,13 @@ a:hover {
 }
 
 .duration-medium {
-    color: darkorange;
+    color: yellowgreen;
 }
 
 .duration-long {
+    color: orange;
+}
+
+.duration-verylong {
     color: red;
 }
