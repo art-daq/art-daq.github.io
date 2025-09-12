@@ -24,6 +24,8 @@ def format_time(time_started):
         return "today"
     if diff.total_seconds() < 3600 * 24 * 7:
         return "this week"
+    if diff.total_seconds() < 3600 * 24 * 30:
+        return "this month"
     return "long ago"
 
 def get_duration_class(time_started, time_ended):
