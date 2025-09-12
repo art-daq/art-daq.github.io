@@ -36,6 +36,7 @@
     <thead>
         <tr>
             <th>Repository</th>
+            <th>Last Commit</th>
             <th>Open Issues</th>
             <th>Open PRs</th>
             <th>Develop Build Status</th>
@@ -51,9 +52,11 @@
             <td>
                 <a href="https://github.com/art-daq/{{ repo.repo }}">{{ repo.repo }}</a>
                 {% if repo.repo_info.isPrivate %}
-                <span class="duration-long">(priv)</span>
+                <span class="duration-long">(private)</span>
                 {% endif %}
-                <span class="duration-{{repo.repo_info.updatedAt | get_time_class}}">{{repo.repo_info.updatedAt | format_time}}</span>
+            </td>
+            <td>
+                <span class="duration-{{repo.repo_info.updatedAt | get_time_class}}">{{repo.repo_info.updatedAt}} ({{repo.repo_info.updatedAt | format_time}})</span>
             </td>
             <td><a href="https://github.com/art-daq/{{ repo.repo }}/issues">{{ repo.open_issues }}</a></td>
             <td><a href="https://github.com/art-daq/{{ repo.repo }}/pulls">{{ repo.open_prs }}</a></td>
@@ -128,6 +131,7 @@
     <tfoot>
         <tr>
             <td><strong>Total</strong></td>
+            <td></td>
             <td><strong>{{ total_issues }}</strong></td>
             <td><strong>{{ total_prs }}</strong></td>
         </tr>
