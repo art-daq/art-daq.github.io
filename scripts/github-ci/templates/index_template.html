@@ -56,7 +56,7 @@
                 {% endif %}
             </td>
             <td>
-                <span class="duration-{{repo.repo_info.updatedAt | get_time_class}}">{{repo.repo_info.updatedAt}} ({{repo.repo_info.updatedAt | format_time}})</span>
+                <span class="duration-{{repo.repo_info.updatedAt | get_time_class}}">{{repo.repo_info.updatedAt | format_time}}</span>
             </td>
             <td><a href="https://github.com/art-daq/{{ repo.repo }}/issues">{{ repo.open_issues }}</a></td>
             <td><a href="https://github.com/art-daq/{{ repo.repo }}/pulls">{{ repo.open_prs }}</a></td>
