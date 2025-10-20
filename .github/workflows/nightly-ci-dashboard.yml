@@ -63,6 +63,7 @@ jobs:
 
     - name: Fetch otsdaq Doxygen docs
       uses: actions/download-artifact@v4
+      if: '!cancelled()'
       with:
         name: doxygen
         github-token: ${{ secrets.BOT_CI_ISSUES }}
@@ -73,25 +74,31 @@ jobs:
     - name: Download artdaq lcov html report
       id: artdaq_download_lcov
       uses: actions/download-artifact@v4
+      if: '!cancelled()'
       with:
         name: artdaq_code_coverage
         github-token: ${{ secrets.BOT_CI_ISSUES }}
         path: ${{ steps.set_paths.outputs.artdaq_lcov_html_report_path }}
         run-id: ${{ steps.run_ids.outputs.artdaq_lcov_id }} 
         repository: "art-daq/.github"
+        
     - name: Download otsdaq lcov html report
       id: otsdaq_download_lcov
       uses: actions/download-artifact@v4
+      if: '!cancelled()'
       with:
         name: otsdaq_code_coverage
         github-token: ${{ secrets.BOT_CI_ISSUES }}
         path: ${{ steps.set_paths.outputs.otsdaq_lcov_html_report_path }}
         run-id: ${{ steps.run_ids.outputs.otsdaq_lcov_id }} 
         repository: "art-daq/.github"
+        
     - name: Checkout art-daq.github.io
       uses: actions/checkout@v4
+      if: '!cancelled()'
       with:
         path: ci-dashboard
+        
     - name: Copy artifacts and generate dashboard
       run: |
         mkdir -p ci-dashboard/scripts/github-ci/site
