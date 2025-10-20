@@ -33,19 +33,19 @@ jobs:
       run: |
         artdaq_doxy_id=$(gh run list --repo art-daq/artdaq \
                               --workflow "artdaq-develop-cpp-ci.yml" \
-                              --limit 1 \
+                              --limit 1 --status success \
                               --json databaseId --jq '.[0].databaseId')
         otsdaq_doxy_id=$(gh run list --repo art-daq/otsdaq \
                                    --workflow "otsdaq-develop-cpp-ci.yml" \
-                                   --limit 1 \
+                                   --limit 1 --status success \
                                    --json databaseId --jq '.[0].databaseId')
         artdaq_lcov_id=$(gh run list --repo art-daq/.github \
                               --workflow "Create artdaq LCOV coverage report" \
-                              --limit 1 \
+                              --limit 1 --status success \
                               --json databaseId --jq '.[0].databaseId')
         otsdaq_lcov_id=$(gh run list --repo art-daq/.github \
                               --workflow "Create otsdaq LCOV coverage report" \
-                              --limit 1 \
+                              --limit 1 --status success \
                               --json databaseId --jq '.[0].databaseId')
         echo "artdaq_doxy_id=$artdaq_doxy_id" | tee -a "$GITHUB_OUTPUT"
         echo "otsdaq_doxy_id=$otsdaq_doxy_id" | tee -a "$GITHUB_OUTPUT"
@@ -63,7 +63,6 @@ jobs:
 
     - name: Fetch otsdaq Doxygen docs
       uses: actions/download-artifact@v4
-      if: '!cancelled()'
       with:
         name: doxygen
         github-token: ${{ secrets.BOT_CI_ISSUES }}
@@ -74,7 +73,6 @@ jobs:
     - name: Download artdaq lcov html report
       id: artdaq_download_lcov
       uses: actions/download-artifact@v4
-      if: '!cancelled()'
       with:
         name: artdaq_code_coverage
         github-token: ${{ secrets.BOT_CI_ISSUES }}
@@ -85,7 +83,6 @@ jobs:
     - name: Download otsdaq lcov html report
       id: otsdaq_download_lcov
       uses: actions/download-artifact@v4
-      if: '!cancelled()'
       with:
         name: otsdaq_code_coverage
         github-token: ${{ secrets.BOT_CI_ISSUES }}
@@ -95,7 +92,6 @@ jobs:
         
     - name: Checkout art-daq.github.io
       uses: actions/checkout@v4
-      if: '!cancelled()'
       with:
         path: ci-dashboard
         
@@ -111,11 +107,14 @@ jobs:
         echo "CI Summary JSON:"
         cat ci_summary.json
         python generate_ci_site.py --json_input ci_summary.json
+    
     - name: Upload pages artifact
       uses: actions/upload-pages-artifact@v3
       with:
         path: ${{ github.workspace }}/ci-dashboard/scripts/github-ci/site
+        
     - name: Remove test directory
+      if: '!cancelled()'
       run: |
         rm -rf ci-dashboard/
 
