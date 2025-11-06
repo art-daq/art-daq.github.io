@@ -39,11 +39,11 @@ for REPO in "${packages_with_ci[@]}"; do
     WHITESPACE_STATUS=$(gh run list -R "$FULL_NAME" --limit 1 --json conclusion,createdAt,event,name,status,updatedAt,url --workflow git-whitespace.yml -q '.[0]')
 
     # Reset inactivity timers
-    gh api -X PUT "repos/$REPO/actions/workflows/artdaq-develop-cpp-ci.yml/enable"
-    gh api -X PUT "repos/$REPO/actions/workflows/artdaq-build-single-pkg.yml/enable"
-    gh api -X PUT "repos/$REPO/actions/workflows/artdaq-test-single-pkg.yml/enable"
-    gh api -X PUT "repos/$REPO/actions/workflows/artdaq-format-single-pkg.yml/enable"
-    gh api -X PUT "repos/$REPO/actions/workflows/git-whitespace.yml/enable"
+    gh api -X PUT "repos/$FULL_NAME/actions/workflows/artdaq-develop-cpp-ci.yml/enable"
+    gh api -X PUT "repos/$FULL_NAME/actions/workflows/artdaq-build-single-pkg.yml/enable"
+    gh api -X PUT "repos/$FULL_NAME/actions/workflows/artdaq-test-single-pkg.yml/enable"
+    gh api -X PUT "repos/$FULL_NAME/actions/workflows/artdaq-format-single-pkg.yml/enable"
+    gh api -X PUT "repos/$FULL_NAME/actions/workflows/git-whitespace.yml/enable"
   else
     # Get most recent single-repo CI build status
     BUILD_DEVELOP_STATUS=$(gh run list -R "$FULL_NAME" --limit 1 --json conclusion,createdAt,event,name,status,updatedAt,url --workflow otsdaq-develop-cpp-ci.yml -q '.[0]')
