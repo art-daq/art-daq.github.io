@@ -30,6 +30,14 @@ for REPO in "${packages_with_ci[@]}"; do
   FORMAT_STATUS="{}"
   WHITESPACE_STATUS="{}"
 
+  # Reset inactivity timers for special workflows
+  gh api -X PUT "repos/art-daq/art-daq.github.io/actions/workflows/nightly-ci-dashboard.yml/enable"
+  gh api -X PUT "repos/art-daq/daq-docker/actions/workflows/alma9-spack-base.yaml/enable"
+  gh api -X PUT "repos/art-daq/daq-docker/actions/workflows/artdaq-spack-selfhosted.yaml/enable"
+  gh api -X PUT "repos/art-daq/daq-docker/actions/workflows/otsdaq-spack-selfhosted.yaml/enable"
+  gh api -X PUT "repos/art-daq/.github/actions/workflows/artdaq-lcov.yml/enable"
+  gh api -X PUT "repos/art-daq/.github/actions/workflows/otsdaq-lcov.yml/enable"
+
   if [[ "$REPO" =~ "artdaq" ]] || [[ "$REPO" =~ "trace" ]]; then
     # Get most recent single-repo CI build status
     BUILD_DEVELOP_STATUS=$(gh run list -R "$FULL_NAME" --limit 1 --json conclusion,createdAt,event,name,status,updatedAt,url --workflow artdaq-develop-cpp-ci.yml -q '.[0]')
@@ -51,6 +59,13 @@ for REPO in "${packages_with_ci[@]}"; do
     TEST_SINGLE_STATUS=$(gh run list -R "$FULL_NAME" --limit 1 --json conclusion,createdAt,event,name,status,updatedAt,url --workflow otsdaq-test-single-pkg.yml -q '.[0]')
     FORMAT_STATUS=$(gh run list -R "$FULL_NAME" --limit 1 --json conclusion,createdAt,event,name,status,updatedAt,url --workflow otsdaq-format-single-pkg.yml -q '.[0]')
     WHITESPACE_STATUS=$(gh run list -R "$FULL_NAME" --limit 1 --json conclusion,createdAt,event,name,status,updatedAt,url --workflow git-whitespace.yml -q '.[0]')
+
+    # Reset inactivity timers
+    gh api -X PUT "repos/$FULL_NAME/actions/workflows/otsdaq-develop-cpp-ci.yml/enable"
+    gh api -X PUT "repos/$FULL_NAME/actions/workflows/otsdaq-build-single-pkg.yml/enable"
+    gh api -X PUT "repos/$FULL_NAME/actions/workflows/otsdaq-test-single-pkg.yml/enable"
+    gh api -X PUT "repos/$FULL_NAME/actions/workflows/otsdaq-format-single-pkg.yml/enable"
+    gh api -X PUT "repos/$FULL_NAME/actions/workflows/git-whitespace.yml/enable"
   fi
 
   # Prepare JSON fragment
