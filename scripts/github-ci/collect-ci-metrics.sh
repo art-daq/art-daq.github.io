@@ -29,7 +29,7 @@ for REPO in "${packages_with_ci[@]}"; do
 
   git clone https://github.com/$FULL_NAME &>/dev/null
   cd $REPO
-  BRANCHES=`git branch -r |wc -l`
+  BRANCHES=`git branch -r |grep -v HEAD|wc -l`
   BRANCH_URL=$(echo "https://github.com/art-daq/$REPO/branches/all")
   cd ..
 
