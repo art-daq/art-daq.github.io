@@ -42,6 +42,13 @@ def get_duration_class(time_started, time_ended):
         return "long"
     return "verylong"
 
+def get_branch_pr_count(branch_count, pr_count):
+    if branch_count - pr_count <= 1:
+        return "good"
+    if branch_count - pr_count < 2:
+        return "bad"
+    return "verybad"
+
 def format_duration(time_started, time_ended):
     dtime_started = format_datetime(time_started)
     dtime_ended = format_datetime(time_ended)

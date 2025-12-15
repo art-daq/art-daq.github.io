@@ -100,3 +100,15 @@ a:hover {
 .duration-verylong {
     color: red;
 }
+
+.branch-count-good {
+    background-color: palegreen;
+}
+
+.branch-count-bad {
+    background-color: wheat;
+}
+
+.branch-count-verybad {
+    background-color: lightcoral;
+}

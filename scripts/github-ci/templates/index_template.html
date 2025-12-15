@@ -61,7 +61,13 @@
             </td>
             <td><a href="https://github.com/art-daq/{{ repo.repo }}/issues">{{ repo.open_issues }}</a></td>
             <td><a href="https://github.com/art-daq/{{ repo.repo }}/pulls">{{ repo.open_prs }}</a></td>
-            <td><a href="https://github.com/art-daq/{{ repo.repo }}/branches/all">{{ repo.branches }}</a></td>
+            <td>
+                <a href="https://github.com/art-daq/{{ repo.repo }}/branches/all">
+                    <span class="branch-count{{repo.branches | get_branch_pr_count(repo.open_prs)}}">
+                        {{ repo.branches }}
+                    </span>
+                </a>
+            </td>
             <td>
                 <a href="{{ repo.build_develop.url }}">
                     <span class="status-{{ repo.build_develop.conclusion }}">
