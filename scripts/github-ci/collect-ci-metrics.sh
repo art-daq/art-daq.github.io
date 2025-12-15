@@ -26,12 +26,15 @@ gh api -X PUT "repos/art-daq/.github/actions/workflows/otsdaq-lcov.yml/enable"
 for REPO in "${packages_with_ci[@]}"; do
   FULL_NAME="$ORG/$REPO"
   echo "This repo: $FULL_NAME"
-
+  
+  BRANCHES=-1
+  BRANCH_URL=$(echo "https://github.com/Mu2e/$REPO/branches/all")
   git clone https://github.com/$FULL_NAME &>/dev/null
-  cd $REPO
-  BRANCHES=`git branch -r |grep -v HEAD|wc -l`
-  BRANCH_URL=$(echo "https://github.com/art-daq/$REPO/branches/all")
-  cd ..
+  if [ -d $REPO ];then
+    cd $REPO
+    BRANCHES=`git branch -r |grep -v HEAD|wc -l`
+    cd ..
+  fi
 
   OPEN_ISSUES=$(gh issue list -R "$FULL_NAME" --state open --limit 1000 --json number --jq 'length' || echo 0)
   ISSUES_URL=$(echo "https://github.com/art-daq/$REPO/issues")
