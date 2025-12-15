@@ -29,7 +29,7 @@ for REPO in "${packages_with_ci[@]}"; do
 
   BRANCHES=-1
   BRANCH_URL=$(echo "https://github.com/Mu2e/$REPO/branches/all")
-  gh repo clone $FULL_NAME $REPO -- --depth 1 --no-checkout --filter=blob:none &>/dev/null
+  gh repo clone $FULL_NAME $REPO -- --no-checkout --filter=blob:none &>/dev/null
   if [ -d $REPO ];then
     cd $REPO
     BRANCHES=`git branch -r |grep -v HEAD|wc -l`
