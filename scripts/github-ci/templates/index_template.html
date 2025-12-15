@@ -65,7 +65,7 @@
             <td>
                 <a href="{{ repo.build_develop.url }}">
                     <span class="status-{{ repo.build_develop.conclusion }}">
-                        {% if repo.format.conclusion | length %}
+                        {% if repo.build_develop.conclusion | length %}
                         {{ repo.build_develop.conclusion | capitalize }}
                         {% else %}
                         {{ repo.build_develop.status | capitalize }}
@@ -82,7 +82,7 @@
             <td>
                 <a href="{{ repo.build_single.url }}">
                     <span class="status-{{ repo.build_single.conclusion }}">
-                        {% if repo.format.conclusion | length %}
+                        {% if repo.build_single.conclusion | length %}
                         {{ repo.build_single.conclusion | capitalize }}
                         {% else %}
                         {{ repo.build_single.status | capitalize }}
@@ -99,7 +99,7 @@
             <td>
                 <a href="{{ repo.test_single.url }}">
                     <span class="status-{{ repo.test_single.conclusion }}">
-                        {% if repo.format.conclusion | length %}
+                        {% if repo.test_single.conclusion | length %}
                         {{ repo.test_single.conclusion | capitalize }}
                         {% else %}
                         {{ repo.test_single.status | capitalize }}
@@ -133,7 +133,7 @@
             <td>
                 <a href="{{ repo.whitespace.url }}">
                     <span class="status-{{ repo.whitespace.conclusion }}">
-                        {% if repo.format.conclusion | length %}
+                        {% if repo.whitespace.conclusion | length %}
                         {{ repo.whitespace.conclusion | capitalize }}
                         {% else %}
                         {{ repo.whitespace.status | capitalize }}
