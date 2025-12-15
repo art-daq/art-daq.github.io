@@ -26,7 +26,7 @@ gh api -X PUT "repos/art-daq/.github/actions/workflows/otsdaq-lcov.yml/enable"
 for REPO in "${packages_with_ci[@]}"; do
   FULL_NAME="$ORG/$REPO"
   echo "This repo: $FULL_NAME"
-  
+
   BRANCHES=-1
   BRANCH_URL=$(echo "https://github.com/Mu2e/$REPO/branches/all")
   git clone https://github.com/$FULL_NAME &>/dev/null
@@ -112,7 +112,7 @@ for REPO in "${packages_with_ci[@]}"; do
   if [[ $retval == 0 ]]; then
     if [[ "$FIRST" = true ]]; then
       FIRST=false
-    else 
+    else
       echo "," >> "$OUTFILE"
     fi
   else

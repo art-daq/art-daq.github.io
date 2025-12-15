@@ -94,13 +94,13 @@ def generate_site(json_input_path):
     {
         "image": "https://github.com/art-daq/daq-docker/actions/workflows/artdaq-spack-selfhosted.yaml/badge.svg",
         "link": "https://github.com/art-daq/daq-docker/actions/workflows/artdaq-spack-selfhosted.yaml",
-        "alt": "Build artdaq-spack docker image (self hosted)"}, 
+        "alt": "Build artdaq-spack docker image (self hosted)"},
     {
         "image": "https://github.com/art-daq/daq-docker/actions/workflows/otsdaq-spack-selfhosted.yaml/badge.svg",
         "link": "https://github.com/art-daq/daq-docker/actions/workflows/otsdaq-spack-selfhosted.yaml",
         "alt": "Build otsdaq-spack docker image (self hosted)"},
     ]
-    
+
     # Content of the index page
     context = {
         "repos": repos,
