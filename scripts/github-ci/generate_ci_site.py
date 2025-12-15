@@ -45,7 +45,7 @@ def get_duration_class(time_started, time_ended):
 def get_branch_pr_count(branch_count, pr_count):
     if branch_count - pr_count <= 1:
         return "good"
-    if branch_count - pr_count < 2:
+    if branch_count - pr_count <= 2:
         return "bad"
     return "verybad"
 
