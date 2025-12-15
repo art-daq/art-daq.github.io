@@ -65,7 +65,11 @@
             <td>
                 <a href="{{ repo.build_develop.url }}">
                     <span class="status-{{ repo.build_develop.conclusion }}">
+                        {% if repo.format.conclusion | length %}
                         {{ repo.build_develop.conclusion | capitalize }}
+                        {% else %}
+                        {{ repo.build_develop.status | capitalize }}
+                        {% endif %}
                     </span>
                 </a>
                 <span class="duration-{{repo.build_develop.createdAt | get_duration_class(repo.build_develop.updatedAt)}}">
@@ -78,7 +82,11 @@
             <td>
                 <a href="{{ repo.build_single.url }}">
                     <span class="status-{{ repo.build_single.conclusion }}">
+                        {% if repo.format.conclusion | length %}
                         {{ repo.build_single.conclusion | capitalize }}
+                        {% else %}
+                        {{ repo.build_single.status | capitalize }}
+                        {% endif %}
                     </span>
                 </a>
                 <span class="duration-{{repo.build_single.createdAt | get_duration_class(repo.build_single.updatedAt)}}">
@@ -91,7 +99,11 @@
             <td>
                 <a href="{{ repo.test_single.url }}">
                     <span class="status-{{ repo.test_single.conclusion }}">
+                        {% if repo.format.conclusion | length %}
                         {{ repo.test_single.conclusion | capitalize }}
+                        {% else %}
+                        {{ repo.test_single.status | capitalize }}
+                        {% endif %}
                     </span>
                 </a>
                 <span class="duration-{{repo.test_single.createdAt | get_duration_class(repo.test_single.updatedAt)}}">
@@ -104,7 +116,11 @@
             <td>
                 <a href="{{ repo.format.url }}">
                     <span class="status-{{ repo.format.conclusion }}">
+                        {% if repo.format.conclusion | length %}
                         {{ repo.format.conclusion | capitalize }}
+                        {% else %}
+                        {{ repo.format.status | capitalize }}
+                        {% endif %}
                     </span>
                 </a>
                 <span class="duration-{{repo.format.createdAt | get_duration_class(repo.format.updatedAt)}}">
@@ -117,7 +133,11 @@
             <td>
                 <a href="{{ repo.whitespace.url }}">
                     <span class="status-{{ repo.whitespace.conclusion }}">
+                        {% if repo.format.conclusion | length %}
                         {{ repo.whitespace.conclusion | capitalize }}
+                        {% else %}
+                        {{ repo.whitespace.status | capitalize }}
+                        {% endif %}
                     </span>
                 </a>
                 <span class="duration-{{repo.whitespace.createdAt | get_duration_class(repo.whitespace.updatedAt)}}">
