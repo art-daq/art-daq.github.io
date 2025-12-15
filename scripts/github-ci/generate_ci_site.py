@@ -70,6 +70,7 @@ def generate_site(json_input_path):
     env.filters["format_time"] = format_time
     env.filters["get_duration_class"] = get_duration_class
     env.filters["format_duration"] = format_duration
+    env.filters["get_branch_pr_count"] = get_branch_pr_count
 
     index_template = env.get_template("index_template.html")
 
