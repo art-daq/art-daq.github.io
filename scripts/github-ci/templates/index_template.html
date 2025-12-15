@@ -39,6 +39,7 @@
             <th>Last Commit</th>
             <th>Open Issues</th>
             <th>Open PRs</th>
+            <th>Branches</th>
             <th>Develop Build Status</th>
             <th>Single-Pkg Build Status</th>
             <th>Single-Pkg Test Status</th>
@@ -60,6 +61,7 @@
             </td>
             <td><a href="https://github.com/art-daq/{{ repo.repo }}/issues">{{ repo.open_issues }}</a></td>
             <td><a href="https://github.com/art-daq/{{ repo.repo }}/pulls">{{ repo.open_prs }}</a></td>
+            <td><a href="https://github.com/art-daq/{{ repo.repo }}/branches/all">{{ repo.branches }}</a></td>
             <td>
                 <a href="{{ repo.build_develop.url }}">
                     <span class="status-{{ repo.build_develop.conclusion }}">

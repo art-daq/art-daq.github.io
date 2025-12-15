@@ -15,9 +15,23 @@ OUTFILE="ci_summary.json"
 echo "[" > "$OUTFILE"
 FIRST=true
 
+# Reset inactivity timers for special workflows
+gh api -X PUT "repos/art-daq/art-daq.github.io/actions/workflows/nightly-ci-dashboard.yml/enable"
+gh api -X PUT "repos/art-daq/daq-docker/actions/workflows/alma9-spack-base.yaml/enable"
+gh api -X PUT "repos/art-daq/daq-docker/actions/workflows/artdaq-spack-selfhosted.yaml/enable"
+gh api -X PUT "repos/art-daq/daq-docker/actions/workflows/otsdaq-spack-selfhosted.yaml/enable"
+gh api -X PUT "repos/art-daq/.github/actions/workflows/artdaq-lcov.yml/enable"
+gh api -X PUT "repos/art-daq/.github/actions/workflows/otsdaq-lcov.yml/enable"
+
 for REPO in "${packages_with_ci[@]}"; do
   FULL_NAME="$ORG/$REPO"
   echo "This repo: $FULL_NAME"
+
+  git clone https://github.com/$FULL_NAME &>/dev/null
+  cd $REPO
+  BRANCHES=`git branch -r |wc -l`
+  BRANCH_URL=$(echo "https://github.com/art-daq/$REPO/branches/all")
+  cd ..
 
   OPEN_ISSUES=$(gh issue list -R "$FULL_NAME" --state open --limit 1000 --json number --jq 'length' || echo 0)
   ISSUES_URL=$(echo "https://github.com/art-daq/$REPO/issues")
@@ -29,14 +43,6 @@ for REPO in "${packages_with_ci[@]}"; do
   TEST_SINGLE_STATUS="{}"
   FORMAT_STATUS="{}"
   WHITESPACE_STATUS="{}"
-
-  # Reset inactivity timers for special workflows
-  gh api -X PUT "repos/art-daq/art-daq.github.io/actions/workflows/nightly-ci-dashboard.yml/enable"
-  gh api -X PUT "repos/art-daq/daq-docker/actions/workflows/alma9-spack-base.yaml/enable"
-  gh api -X PUT "repos/art-daq/daq-docker/actions/workflows/artdaq-spack-selfhosted.yaml/enable"
-  gh api -X PUT "repos/art-daq/daq-docker/actions/workflows/otsdaq-spack-selfhosted.yaml/enable"
-  gh api -X PUT "repos/art-daq/.github/actions/workflows/artdaq-lcov.yml/enable"
-  gh api -X PUT "repos/art-daq/.github/actions/workflows/otsdaq-lcov.yml/enable"
 
   if [[ "$REPO" =~ "artdaq" ]] || [[ "$REPO" =~ "trace" ]]; then
     # Get most recent single-repo CI build status
@@ -76,6 +82,8 @@ for REPO in "${packages_with_ci[@]}"; do
     --arg issues_url "$ISSUES_URL" \
     --argjson prs "$OPEN_PRS" \
     --arg prs_url "$PRS_URL" \
+    --argjson branches "$BRANCHES" \
+    --arg branches_url "$BRANCH_URL" \
     --argjson build_develop "$BUILD_DEVELOP_STATUS" \
     --argjson build_single "$BUILD_SINGLE_STATUS" \
     --argjson test_single "$TEST_SINGLE_STATUS" \
@@ -88,6 +96,8 @@ for REPO in "${packages_with_ci[@]}"; do
       issues_url: $issues_url,
       open_prs: $prs,
       prs_url: $prs_url,
+      branches: $branches,
+      branches_url: $branches_url,
       build_develop: $build_develop,
       build_single: $build_single,
       test_single: $test_single,
