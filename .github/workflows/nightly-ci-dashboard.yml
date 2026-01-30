@@ -16,7 +16,7 @@ jobs:
       artdaq_doxy_html_path: ${{ steps.set_paths.outputs.artdaq_doxy_html_path }}
       otsdaq_doxy_html_path: ${{ steps.set_paths.outputs.otsdaq_doxy_html_path }}
     defaults:
-      run: 
+      run:
         shell: bash
     env:
       GH_TOKEN: ${{ secrets.BOT_CI_ISSUES }}
@@ -51,14 +51,14 @@ jobs:
         echo "otsdaq_doxy_id=$otsdaq_doxy_id" | tee -a "$GITHUB_OUTPUT"
         echo "artdaq_lcov_id=$artdaq_lcov_id" | tee -a "$GITHUB_OUTPUT"
         echo "otsdaq_lcov_id=$otsdaq_lcov_id" | tee -a "$GITHUB_OUTPUT"
-        
+
     - name: Fetch artdaq Doxygen docs
       uses: actions/download-artifact@v4
       with:
         name: doxygen
         github-token: ${{ secrets.BOT_CI_ISSUES }}
         repository: art-daq/artdaq
-        path: ${{ steps.set_paths.outputs.artdaq_doxy_html_path }} 
+        path: ${{ steps.set_paths.outputs.artdaq_doxy_html_path }}
         run-id: ${{ steps.run_ids.outputs.artdaq_doxy_id }}
 
     - name: Fetch otsdaq Doxygen docs
@@ -68,7 +68,7 @@ jobs:
         github-token: ${{ secrets.BOT_CI_ISSUES }}
         repository: art-daq/otsdaq
         run-id: ${{ steps.run_ids.outputs.otsdaq_doxy_id }}
-        path: ${{ steps.set_paths.outputs.otsdaq_doxy_html_path }} 
+        path: ${{ steps.set_paths.outputs.otsdaq_doxy_html_path }}
 
     - name: Download artdaq lcov html report
       id: artdaq_download_lcov
@@ -77,9 +77,9 @@ jobs:
         name: artdaq_code_coverage
         github-token: ${{ secrets.BOT_CI_ISSUES }}
         path: ${{ steps.set_paths.outputs.artdaq_lcov_html_report_path }}
-        run-id: ${{ steps.run_ids.outputs.artdaq_lcov_id }} 
+        run-id: ${{ steps.run_ids.outputs.artdaq_lcov_id }}
         repository: "art-daq/.github"
-        
+
     - name: Download otsdaq lcov html report
       id: otsdaq_download_lcov
       uses: actions/download-artifact@v4
@@ -87,14 +87,14 @@ jobs:
         name: otsdaq_code_coverage
         github-token: ${{ secrets.BOT_CI_ISSUES }}
         path: ${{ steps.set_paths.outputs.otsdaq_lcov_html_report_path }}
-        run-id: ${{ steps.run_ids.outputs.otsdaq_lcov_id }} 
+        run-id: ${{ steps.run_ids.outputs.otsdaq_lcov_id }}
         repository: "art-daq/.github"
-        
+
     - name: Checkout art-daq.github.io
       uses: actions/checkout@v4
       with:
         path: ci-dashboard
-        
+
     - name: Copy artifacts and generate dashboard
       run: |
         mkdir -p ci-dashboard/scripts/github-ci/site
@@ -107,12 +107,12 @@ jobs:
         echo "CI Summary JSON:"
         cat ci_summary.json
         python generate_ci_site.py --json_input ci_summary.json
-    
+
     - name: Upload pages artifact
       uses: actions/upload-pages-artifact@v3
       with:
         path: ${{ github.workspace }}/ci-dashboard/scripts/github-ci/site
-        
+
     - name: Remove test directory
       if: '!cancelled()'
       run: |
@@ -135,4 +135,3 @@ jobs:
     - name: Deploy to GitHub Pages
       id: deployment
       uses: actions/deploy-pages@v4
-
