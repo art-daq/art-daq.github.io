@@ -28,7 +28,7 @@ for REPO in "${packages_with_ci[@]}"; do
   echo "This repo: $FULL_NAME"
 
   BRANCHES=-1
-  BRANCH_URL=$(echo "https://github.com/Mu2e/$REPO/branches/all")
+  BRANCH_URL=$(echo "https://github.com/art-daq/$REPO/branches/all")
   gh repo clone $FULL_NAME $REPO -- --no-checkout --filter=blob:none &>/dev/null
   if [ -d $REPO ];then
     cd $REPO
