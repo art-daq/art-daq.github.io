@@ -32,7 +32,13 @@ packages_with_ci=(
     "otsdaq-prepmodernization"
 )
 
+packages_without_ci=(
+    "artdaq-spack"
+    "art-daq.github.io"
+)
+
 packages=(
   "${packages_with_ci[@]}"
+  "${packages_without_ci[@]}"
   "daq-docker"
 )

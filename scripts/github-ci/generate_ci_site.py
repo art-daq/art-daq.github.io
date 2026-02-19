@@ -84,10 +84,18 @@ def generate_site(json_input_path):
     total_issues = sum(repo["open_issues"] for repo in repos)
     total_prs = sum(repo["open_prs"] for repo in repos)
 
-    total_repos = len(repos)
+    ci_repos = []
+    noci_repos = []
+    for repo in repos:
+        if repo.get("build_develop") != None:
+            ci_repos.append(repo)
+        else:
+            noci_repos.append(repo)
+
+    total_repos = len(ci_repos)
     passing_repos = sum(
         1
-        for repo in repos
+        for repo in ci_repos
         if repo.get("build_develop", {}).get("conclusion") == "success"
     )
 
@@ -113,6 +121,11 @@ def generate_site(json_input_path):
             "alt": "Build alma9-spack docker image",
         },
         {
+            "image": "https://github.com/art-daq/daq-docker/actions/workflows/alma10-spack-base.yaml/badge.svg",
+            "link": "https://github.com/art-daq/daq-docker/actions/workflows/alma10-spack-base.yaml",
+            "alt": "Build alma10-spack docker image",
+        },
+        {
             "image": "https://github.com/art-daq/daq-docker/actions/workflows/artdaq-spack-selfhosted.yaml/badge.svg",
             "link": "https://github.com/art-daq/daq-docker/actions/workflows/artdaq-spack-selfhosted.yaml",
             "alt": "Build artdaq-spack docker image (self hosted)",
@@ -126,7 +139,8 @@ def generate_site(json_input_path):
 
     # Content of the index page
     context = {
-        "repos": repos,
+        "ci_repos": ci_repos,
+        "noci_repos": noci_repos,
         "last_updated": last_updated,
         "total_issues": total_issues,
         "total_prs": total_prs,

@@ -48,7 +48,7 @@
         </tr>
     </thead>
     <tbody>
-        {% for repo in repos %}
+        {% for repo in ci_repos %}
         <tr>
             <td>
                 <a href="https://github.com/art-daq/{{ repo.repo }}">{{ repo.repo }}</a>
@@ -117,6 +117,63 @@
                     {{repo.test_single.createdAt | format_time}}
                 </span>
             </td>
+            <td>
+                <a href="{{ repo.format.url }}">
+                    <span class="status-{{ repo.format.conclusion }}">
+                        {% if repo.format.conclusion | length %}
+                        {{ repo.format.conclusion | capitalize }}
+                        {% else %}
+                        {{ repo.format.status | capitalize }}
+                        {% endif %}
+                    </span>
+                </a>
+                <span class="duration-{{repo.format.createdAt | get_duration_class(repo.format.updatedAt)}}">
+                    {{repo.format.createdAt | format_duration(repo.format.updatedAt)}}
+                </span>
+                <span class="duration-{{repo.format.createdAt | get_time_class}}">
+                    {{repo.format.createdAt | format_time}}
+                </span>
+            </td>
+            <td>
+                <a href="{{ repo.whitespace.url }}">
+                    <span class="status-{{ repo.whitespace.conclusion }}">
+                        {% if repo.whitespace.conclusion | length %}
+                        {{ repo.whitespace.conclusion | capitalize }}
+                        {% else %}
+                        {{ repo.whitespace.status | capitalize }}
+                        {% endif %}
+                    </span>
+                </a>
+                <span class="duration-{{repo.whitespace.createdAt | get_duration_class(repo.whitespace.updatedAt)}}">
+                    {{repo.whitespace.createdAt | format_duration(repo.whitespace.updatedAt)}}
+                </span>
+                <span class="duration-{{repo.whitespace.createdAt | get_time_class}}">
+                    {{repo.whitespace.createdAt | format_time}}
+                </span>
+            </td>
+        </tr>
+        {% endfor %}
+        {% for repo in noci_repos %}
+        <tr>
+            <td>
+                <a href="https://github.com/art-daq/{{ repo.repo }}">{{ repo.repo }}</a>
+                {% if repo.repo_info.isPrivate %}
+                <span class="duration-verylong">(private)</span>
+                {% endif %}
+            </td>
+            <td>
+                <span class="duration-{{repo.repo_info.updatedAt | get_time_class}}">{{repo.repo_info.updatedAt | format_time}}</span>
+            </td>
+            <td><a href="https://github.com/art-daq/{{ repo.repo }}/issues">{{ repo.open_issues }}</a></td>
+            <td><a href="https://github.com/art-daq/{{ repo.repo }}/pulls">{{ repo.open_prs }}</a></td>
+            <td class="branch-count-{{repo.branches | get_branch_pr_count(repo.open_prs)}}">
+                <a href="https://github.com/art-daq/{{ repo.repo }}/branches/all">
+                    {{ repo.branches }}
+                </a>
+            </td>
+            <td></td>
+            <td></td>
+            <td></td>
             <td>
                 <a href="{{ repo.format.url }}">
                     <span class="status-{{ repo.format.conclusion }}">
