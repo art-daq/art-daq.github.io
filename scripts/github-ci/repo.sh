@@ -24,6 +24,7 @@ packages_with_ci=(
     "artdaq-daqinterface"
     "artdaq-demo"
     "artdaq-epics-plugin"
+    "artdaq-caen"
     "otsdaq"
     "otsdaq-utilities"
     "otsdaq-components"
