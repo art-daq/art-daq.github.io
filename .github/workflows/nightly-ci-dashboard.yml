@@ -34,19 +34,19 @@ jobs:
     - name: Get workflow run IDs
       id: run_ids
       run: |
-        artdaq_doxy_id=$(gh run list --repo art-daq/artdaq \
+        artdaq_doxy_id=$(gh run list --repo art-daq/artdaq -b develop \
                               --workflow "artdaq-develop-cpp-ci.yml" \
                               --limit 1 --status success \
                               --json databaseId --jq '.[0].databaseId')
-        otsdaq_doxy_id=$(gh run list --repo art-daq/otsdaq \
+        otsdaq_doxy_id=$(gh run list --repo art-daq/otsdaq -b develop \
                                    --workflow "otsdaq-develop-cpp-ci.yml" \
                                    --limit 1 --status success \
                                    --json databaseId --jq '.[0].databaseId')
-        artdaq_lcov_id=$(gh run list --repo art-daq/.github \
+        artdaq_lcov_id=$(gh run list --repo art-daq/.github -b develop \
                               --workflow "Create artdaq LCOV coverage report" \
                               --limit 1 --status success \
                               --json databaseId --jq '.[0].databaseId')
-        otsdaq_lcov_id=$(gh run list --repo art-daq/.github \
+        otsdaq_lcov_id=$(gh run list --repo art-daq/.github -b develop \
                               --workflow "Create otsdaq LCOV coverage report" \
                               --limit 1 --status success \
                               --json databaseId --jq '.[0].databaseId')

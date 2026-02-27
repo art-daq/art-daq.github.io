@@ -50,11 +50,11 @@ for REPO in "${packages_with_ci[@]}"; do
 
   if [[ "$REPO" =~ "artdaq" ]] || [[ "$REPO" =~ "trace" ]]; then
     # Get most recent single-repo CI build status
-    BUILD_DEVELOP_STATUS=$(gh run list -R "$FULL_NAME" --limit 1 --json conclusion,createdAt,event,name,status,updatedAt,url --workflow artdaq-develop-cpp-ci.yml -q '.[0]')
-    BUILD_SINGLE_STATUS=$(gh run list -R "$FULL_NAME" --limit 1 --json conclusion,createdAt,event,name,status,updatedAt,url --workflow artdaq-build-single-pkg.yml -q '.[0]')
-    TEST_SINGLE_STATUS=$(gh run list -R "$FULL_NAME" --limit 1 --json conclusion,createdAt,event,name,status,updatedAt,url --workflow artdaq-test-single-pkg.yml -q '.[0]')
-    FORMAT_STATUS=$(gh run list -R "$FULL_NAME" --limit 1 --json conclusion,createdAt,event,name,status,updatedAt,url --workflow artdaq-format-single-pkg.yml -q '.[0]')
-    WHITESPACE_STATUS=$(gh run list -R "$FULL_NAME" --limit 1 --json conclusion,createdAt,event,name,status,updatedAt,url --workflow git-whitespace.yml -q '.[0]')
+    BUILD_DEVELOP_STATUS=$(gh run list -R "$FULL_NAME" -b develop --limit 1 --json conclusion,createdAt,event,name,status,updatedAt,url --workflow artdaq-develop-cpp-ci.yml -q '.[0]')
+    BUILD_SINGLE_STATUS=$(gh run list -R "$FULL_NAME" -b develop --limit 1 --json conclusion,createdAt,event,name,status,updatedAt,url --workflow artdaq-build-single-pkg.yml -q '.[0]')
+    TEST_SINGLE_STATUS=$(gh run list -R "$FULL_NAME" -b develop --limit 1 --json conclusion,createdAt,event,name,status,updatedAt,url --workflow artdaq-test-single-pkg.yml -q '.[0]')
+    FORMAT_STATUS=$(gh run list -R "$FULL_NAME" -b develop --limit 1 --json conclusion,createdAt,event,name,status,updatedAt,url --workflow artdaq-format-single-pkg.yml -q '.[0]')
+    WHITESPACE_STATUS=$(gh run list -R "$FULL_NAME" -b develop --limit 1 --json conclusion,createdAt,event,name,status,updatedAt,url --workflow git-whitespace.yml -q '.[0]')
 
     # Reset inactivity timers
     gh api -X PUT "repos/$FULL_NAME/actions/workflows/artdaq-develop-cpp-ci.yml/enable"
@@ -64,11 +64,11 @@ for REPO in "${packages_with_ci[@]}"; do
     gh api -X PUT "repos/$FULL_NAME/actions/workflows/git-whitespace.yml/enable"
   else
     # Get most recent single-repo CI build status
-    BUILD_DEVELOP_STATUS=$(gh run list -R "$FULL_NAME" --limit 1 --json conclusion,createdAt,event,name,status,updatedAt,url --workflow otsdaq-develop-cpp-ci.yml -q '.[0]')
-    BUILD_SINGLE_STATUS=$(gh run list -R "$FULL_NAME" --limit 1 --json conclusion,createdAt,event,name,status,updatedAt,url --workflow otsdaq-build-single-pkg.yml -q '.[0]')
-    TEST_SINGLE_STATUS=$(gh run list -R "$FULL_NAME" --limit 1 --json conclusion,createdAt,event,name,status,updatedAt,url --workflow otsdaq-test-single-pkg.yml -q '.[0]')
-    FORMAT_STATUS=$(gh run list -R "$FULL_NAME" --limit 1 --json conclusion,createdAt,event,name,status,updatedAt,url --workflow otsdaq-format-single-pkg.yml -q '.[0]')
-    WHITESPACE_STATUS=$(gh run list -R "$FULL_NAME" --limit 1 --json conclusion,createdAt,event,name,status,updatedAt,url --workflow git-whitespace.yml -q '.[0]')
+    BUILD_DEVELOP_STATUS=$(gh run list -R "$FULL_NAME" -b develop --limit 1 --json conclusion,createdAt,event,name,status,updatedAt,url --workflow otsdaq-develop-cpp-ci.yml -q '.[0]')
+    BUILD_SINGLE_STATUS=$(gh run list -R "$FULL_NAME" -b develop --limit 1 --json conclusion,createdAt,event,name,status,updatedAt,url --workflow otsdaq-build-single-pkg.yml -q '.[0]')
+    TEST_SINGLE_STATUS=$(gh run list -R "$FULL_NAME" -b develop --limit 1 --json conclusion,createdAt,event,name,status,updatedAt,url --workflow otsdaq-test-single-pkg.yml -q '.[0]')
+    FORMAT_STATUS=$(gh run list -R "$FULL_NAME" -b develop --limit 1 --json conclusion,createdAt,event,name,status,updatedAt,url --workflow otsdaq-format-single-pkg.yml -q '.[0]')
+    WHITESPACE_STATUS=$(gh run list -R "$FULL_NAME" -b develop --limit 1 --json conclusion,createdAt,event,name,status,updatedAt,url --workflow git-whitespace.yml -q '.[0]')
 
     # Reset inactivity timers
     gh api -X PUT "repos/$FULL_NAME/actions/workflows/otsdaq-develop-cpp-ci.yml/enable"
