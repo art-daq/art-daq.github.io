@@ -56,7 +56,7 @@ jobs:
         echo "otsdaq_lcov_id=$otsdaq_lcov_id" | tee -a "$GITHUB_OUTPUT"
 
     - name: Fetch artdaq Doxygen docs
-      uses: actions/download-artifact@v4
+      uses: actions/download-artifact@main
       with:
         name: doxygen
         github-token: ${{ secrets.BOT_CI_ISSUES }}
@@ -65,7 +65,7 @@ jobs:
         run-id: ${{ steps.run_ids.outputs.artdaq_doxy_id }}
 
     - name: Fetch otsdaq Doxygen docs
-      uses: actions/download-artifact@v4
+      uses: actions/download-artifact@main
       with:
         name: doxygen
         github-token: ${{ secrets.BOT_CI_ISSUES }}
@@ -75,7 +75,7 @@ jobs:
 
     - name: Download artdaq lcov html report
       id: artdaq_download_lcov
-      uses: actions/download-artifact@v4
+      uses: actions/download-artifact@main
       with:
         name: artdaq_code_coverage
         github-token: ${{ secrets.BOT_CI_ISSUES }}
@@ -85,7 +85,7 @@ jobs:
 
     - name: Download otsdaq lcov html report
       id: otsdaq_download_lcov
-      uses: actions/download-artifact@v4
+      uses: actions/download-artifact@main
       with:
         name: otsdaq_code_coverage
         github-token: ${{ secrets.BOT_CI_ISSUES }}
@@ -94,7 +94,7 @@ jobs:
         repository: "art-daq/.github"
 
     - name: Checkout art-daq.github.io
-      uses: actions/checkout@v4
+      uses: actions/checkout@main
       with:
         path: ci-dashboard
 
@@ -112,7 +112,7 @@ jobs:
         python generate_ci_site.py --json_input ci_summary.json
 
     - name: Upload pages artifact
-      uses: actions/upload-pages-artifact@v3
+      uses: actions/upload-pages-artifact@main
       with:
         path: ${{ github.workspace }}/ci-dashboard/scripts/github-ci/site
 
@@ -134,7 +134,7 @@ jobs:
         url: ${{ steps.deployment.outputs.page_url }}
     steps:
     - name: Configure GitHub Pages
-      uses: actions/configure-pages@v5
+      uses: actions/configure-pages@main
     - name: Deploy to GitHub Pages
       id: deployment
-      uses: actions/deploy-pages@v4
+      uses: actions/deploy-pages@main
