@@ -25,7 +25,6 @@ gh api -X PUT "repos/art-daq/.github/actions/workflows/artdaq-lcov.yml/enable"
 gh api -X PUT "repos/art-daq/.github/actions/workflows/otsdaq-lcov.yml/enable"
 
 PROJECT_NUMBER=1
-PROJECT_ID="$(gh project view "$PROJECT_NUMBER" --owner "$ORG" --format json --jq '.id')"
 
 echo "Collecting statistics for CI-enabled repos"
 for REPO in "${packages_with_ci[@]}"; do
@@ -52,15 +51,14 @@ for REPO in "${packages_with_ci[@]}"; do
   gh issue list -R "$FULL_NAME" --search "no:project" --state all --limit 1000 --json url \
   | jq -r '.[].url' \
   | while read -r URL; do
-    echo "Adding $URL to project $PROJECT_ID"
-    # item-add is idempotent-ish: if it errors on duplicates, you can ignore failures
-    gh project item-add "$PROJECT_ID" --owner "$ORG" --url "$URL" >/dev/null || true
+    echo "Adding $URL to project $PROJECT_NUMBER"
+    gh project item-add "$PROJECT_NUMBER" --owner "$ORG" --url "$URL" >/dev/null || true
   done
   gh pr list -R "$FULL_NAME" --search "no:project" --state all --limit 1000 --json url \
   | jq -r '.[].url' \
   | while read -r URL; do
-    echo "Adding $URL to project $PROJECT_ID"
-    gh project item-add "$PROJECT_ID" --owner "$ORG" --url "$URL" >/dev/null || true
+    echo "Adding $URL to project $PROJECT_NUMBER"
+    gh project item-add "$PROJECT_NUMBER" --owner "$ORG" --url "$URL" >/dev/null || true
   done
 
   if [[ "$REPO" =~ "artdaq" ]] || [[ "$REPO" =~ "trace" ]]; then
@@ -172,15 +170,14 @@ for REPO in "${packages_without_ci[@]}"; do
   gh issue list -R "$FULL_NAME" --search "no:project" --state all --limit 1000 --json url \
   | jq -r '.[].url' \
   | while read -r URL; do
-    echo "Adding $URL to project $PROJECT_ID"
-    # item-add is idempotent-ish: if it errors on duplicates, you can ignore failures
-    gh project item-add "$PROJECT_ID" --owner "$ORG" --url "$URL" >/dev/null || true
+    echo "Adding $URL to project $PROJECT_NUMBER"
+    gh project item-add "$PROJECT_NUMBER" --owner "$ORG" --url "$URL" >/dev/null || true
   done
   gh pr list -R "$FULL_NAME" --search "no:project" --state all --limit 1000 --json url \
   | jq -r '.[].url' \
   | while read -r URL; do
-    echo "Adding $URL to project $PROJECT_ID"
-    gh project item-add "$PROJECT_ID" --owner "$ORG" --url "$URL" >/dev/null || true
+    echo "Adding $URL to project $PROJECT_NUMBER"
+    gh project item-add "$PROJECT_NUMBER" --owner "$ORG" --url "$URL" >/dev/null || true
   done
 
   echo "Reset inactivity timers"
