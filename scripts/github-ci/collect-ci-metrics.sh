@@ -26,19 +26,20 @@ gh api -X PUT "repos/art-daq/.github/actions/workflows/otsdaq-lcov.yml/enable"
 
 echo "Add missing Issues and PRs to Project"
 PROJECT_NUMBER=1
-PROJECT_ID="$(gh project view "$PROJECT_NUMBER" --owner "$OWNER" --format json --jq '.id')"
+PROJECT_ID="$(gh project view "$PROJECT_NUMBER" --owner "$ORG" --format json --jq '.id')"
+
 gh issue list --search "org:art-daq" --state all --limit 1000 --json url \
 | jq -r '.[].url' \
 | while read -r URL; do
     echo "Adding $URL to project $PROJECT_ID"
     # item-add is idempotent-ish: if it errors on duplicates, you can ignore failures
-    gh project item-add "$PROJECT_ID" --owner "$OWNER" --url "$URL" >/dev/null || true
+    gh project item-add "$PROJECT_ID" --owner "$ORG" --url "$URL" >/dev/null || true
   done
   gh pr list --search "org:art-daq" --state all --limit 1000 --json url \
 | jq -r '.[].url' \
 | while read -r URL; do
     echo "Adding $URL to project $PROJECT_ID"
-    gh project item-add "$PROJECT_ID" --owner "$OWNER" --url "$URL" >/dev/null || true
+    gh project item-add "$PROJECT_ID" --owner "$ORG" --url "$URL" >/dev/null || true
   done
 
   echo "Collecting statistics for CI-enabled repos"
