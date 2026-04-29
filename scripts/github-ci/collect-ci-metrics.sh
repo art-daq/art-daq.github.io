@@ -163,8 +163,15 @@ for REPO in "${packages_without_ci[@]}"; do
   PRS_URL=$(echo "https://github.com/$ORG/$REPO/pulls")
   REPO_INFO=$(gh repo view "$FULL_NAME" --json isPrivate,updatedAt)
 
-  FORMAT_STATUS=$(gh run list -R "$FULL_NAME" --limit 1 --json conclusion,createdAt,event,name,status,updatedAt,url --workflow artdaq-format-single-pkg.yml -q '.[0]')
+  if [[ "$REPO" =~ "artdaq" ]]; then
+    FORMAT_STATUS=$(gh run list -R "$FULL_NAME" --limit 1 --json conclusion,createdAt,event,name,status,updatedAt,url --workflow artdaq-format-single-pkg.yml -q '.[0]')
+  else if [[ "$REPO" =~ "otsdaq" ]]; then
+    FORMAT_STATUS=$(gh run list -R "$FULL_NAME" --limit 1 --json conclusion,createdAt,event,name,status,updatedAt,url --workflow otsdaq-format-single-pkg.yml -q '.[0]')
+  fi
   WHITESPACE_STATUS=$(gh run list -R "$FULL_NAME" --limit 1 --json conclusion,createdAt,event,name,status,updatedAt,url --workflow git-whitespace.yml -q '.[0]')
+
+  FORMAT_STATUS=${FORMAT_STATUS:-"{}"}
+  WHITESPACE_STATUS=${WHITESPACE_STATUS:-"{}"}
 
   echo "Add missing Issues and PRs to Project"
   gh issue list -R "$FULL_NAME" --search "no:project" --state all --limit 1000 --json url \
