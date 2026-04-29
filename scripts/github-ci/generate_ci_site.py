@@ -38,6 +38,7 @@ def format_time(time_started):
 
 
 def get_duration_class(time_started, time_ended):
+    print(f"Calculating duration class for start: {time_started}, end: {time_ended}")
     if (
         time_started is not None
         and time_started != ""
