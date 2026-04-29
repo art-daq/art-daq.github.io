@@ -165,7 +165,7 @@ for REPO in "${packages_without_ci[@]}"; do
 
   if [[ "$REPO" =~ "artdaq" ]]; then
     FORMAT_STATUS=$(gh run list -R "$FULL_NAME" --limit 1 --json conclusion,createdAt,event,name,status,updatedAt,url --workflow artdaq-format-single-pkg.yml -q '.[0]')
-  else if [[ "$REPO" =~ "otsdaq" ]]; then
+  elif [[ "$REPO" =~ "otsdaq" ]]; then
     FORMAT_STATUS=$(gh run list -R "$FULL_NAME" --limit 1 --json conclusion,createdAt,event,name,status,updatedAt,url --workflow otsdaq-format-single-pkg.yml -q '.[0]')
   fi
   WHITESPACE_STATUS=$(gh run list -R "$FULL_NAME" --limit 1 --json conclusion,createdAt,event,name,status,updatedAt,url --workflow git-whitespace.yml -q '.[0]')
