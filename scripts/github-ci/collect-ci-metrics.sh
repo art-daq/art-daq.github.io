@@ -91,12 +91,6 @@ for REPO in "${packages_with_ci[@]}"; do
     gh api -X PUT "repos/$FULL_NAME/actions/workflows/git-whitespace.yml/enable"
   fi
 
-  BUILD_DEVEOP_STATUS=${BUILD_DEVELOP_STATUS:-"{}"}
-  BUILD_SINGLE_STATUS=${BUILD_SINGLE_STATUS:-"{}"}
-  TEST_SINGLE_STATUS=${TEST_SINGLE_STATUS:-"{}"}
-  FORMAT_STATUS=${FORMAT_STATUS:-"{}"}
-  WHITESPACE_STATUS=${WHITESPACE_STATUS:-"{}"}
-
   #echo "Prepare JSON fragment"
   JSON_ENTRY=$(jq -n \
     --arg repo "$REPO" \
@@ -163,15 +157,13 @@ for REPO in "${packages_without_ci[@]}"; do
   PRS_URL=$(echo "https://github.com/$ORG/$REPO/pulls")
   REPO_INFO=$(gh repo view "$FULL_NAME" --json isPrivate,updatedAt)
 
+  FORMAT_STATUS=null
   if [[ "$REPO" =~ "artdaq" ]]; then
     FORMAT_STATUS=$(gh run list -R "$FULL_NAME" --limit 1 --json conclusion,createdAt,event,name,status,updatedAt,url --workflow artdaq-format-single-pkg.yml -q '.[0]')
   elif [[ "$REPO" =~ "otsdaq" ]]; then
     FORMAT_STATUS=$(gh run list -R "$FULL_NAME" --limit 1 --json conclusion,createdAt,event,name,status,updatedAt,url --workflow otsdaq-format-single-pkg.yml -q '.[0]')
   fi
   WHITESPACE_STATUS=$(gh run list -R "$FULL_NAME" --limit 1 --json conclusion,createdAt,event,name,status,updatedAt,url --workflow git-whitespace.yml -q '.[0]')
-
-  FORMAT_STATUS=${FORMAT_STATUS:-"{}"}
-  WHITESPACE_STATUS=${WHITESPACE_STATUS:-"{}"}
 
   #echo "Add missing Issues and PRs to Project"
   gh issue list -R "$FULL_NAME" --search "no:project" --state all --limit 1000 --json url \
