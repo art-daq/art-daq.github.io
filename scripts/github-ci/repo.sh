@@ -35,6 +35,9 @@ packages_with_ci=(
 
 packages_without_ci=(
     "artdaq-spack"
+    "artdaq-suite"
+    "otsdaq-suite"
+    ".github"
     "art-daq.github.io"
 )
 
