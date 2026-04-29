@@ -24,25 +24,10 @@ gh api -X PUT "repos/art-daq/daq-docker/actions/workflows/otsdaq-spack-selfhoste
 gh api -X PUT "repos/art-daq/.github/actions/workflows/artdaq-lcov.yml/enable"
 gh api -X PUT "repos/art-daq/.github/actions/workflows/otsdaq-lcov.yml/enable"
 
-echo "Add missing Issues and PRs to Project"
 PROJECT_NUMBER=1
 PROJECT_ID="$(gh project view "$PROJECT_NUMBER" --owner "$ORG" --format json --jq '.id')"
 
-gh issue list --search "org:art-daq" --state all --limit 1000 --json url \
-| jq -r '.[].url' \
-| while read -r URL; do
-    echo "Adding $URL to project $PROJECT_ID"
-    # item-add is idempotent-ish: if it errors on duplicates, you can ignore failures
-    gh project item-add "$PROJECT_ID" --owner "$ORG" --url "$URL" >/dev/null || true
-  done
-  gh pr list --search "org:art-daq" --state all --limit 1000 --json url \
-| jq -r '.[].url' \
-| while read -r URL; do
-    echo "Adding $URL to project $PROJECT_ID"
-    gh project item-add "$PROJECT_ID" --owner "$ORG" --url "$URL" >/dev/null || true
-  done
-
-  echo "Collecting statistics for CI-enabled repos"
+echo "Collecting statistics for CI-enabled repos"
 for REPO in "${packages_with_ci[@]}"; do
   FULL_NAME="$ORG/$REPO"
   echo "This repo: $FULL_NAME"
@@ -62,6 +47,21 @@ for REPO in "${packages_with_ci[@]}"; do
   OPEN_PRS=$(gh pr list -R "$FULL_NAME" --state open --limit 1000 --json number --jq 'length' || echo 0)
   PRS_URL=$(echo "https://github.com/$ORG/$REPO/pulls")
   REPO_INFO=$(gh repo view "$FULL_NAME" --json isPrivate,updatedAt)
+
+  echo "Add missing Issues and PRs to Project"
+  gh issue list -R "$FULL_NAME" --search "no:project" --state all --limit 1000 --json url \
+  | jq -r '.[].url' \
+  | while read -r URL; do
+    echo "Adding $URL to project $PROJECT_ID"
+    # item-add is idempotent-ish: if it errors on duplicates, you can ignore failures
+    gh project item-add "$PROJECT_ID" --owner "$ORG" --url "$URL" >/dev/null || true
+  done
+  gh pr list -R "$FULL_NAME" --search "no:project" --state all --limit 1000 --json url \
+  | jq -r '.[].url' \
+  | while read -r URL; do
+    echo "Adding $URL to project $PROJECT_ID"
+    gh project item-add "$PROJECT_ID" --owner "$ORG" --url "$URL" >/dev/null || true
+  done
 
   if [[ "$REPO" =~ "artdaq" ]] || [[ "$REPO" =~ "trace" ]]; then
     echo "Get most recent single-repo CI build status"
@@ -167,6 +167,21 @@ for REPO in "${packages_without_ci[@]}"; do
 
   FORMAT_STATUS=$(gh run list -R "$FULL_NAME" --limit 1 --json conclusion,createdAt,event,name,status,updatedAt,url --workflow artdaq-format-single-pkg.yml -q '.[0]')
   WHITESPACE_STATUS=$(gh run list -R "$FULL_NAME" --limit 1 --json conclusion,createdAt,event,name,status,updatedAt,url --workflow git-whitespace.yml -q '.[0]')
+
+  echo "Add missing Issues and PRs to Project"
+  gh issue list -R "$FULL_NAME" --search "no:project" --state all --limit 1000 --json url \
+  | jq -r '.[].url' \
+  | while read -r URL; do
+    echo "Adding $URL to project $PROJECT_ID"
+    # item-add is idempotent-ish: if it errors on duplicates, you can ignore failures
+    gh project item-add "$PROJECT_ID" --owner "$ORG" --url "$URL" >/dev/null || true
+  done
+  gh pr list -R "$FULL_NAME" --search "no:project" --state all --limit 1000 --json url \
+  | jq -r '.[].url' \
+  | while read -r URL; do
+    echo "Adding $URL to project $PROJECT_ID"
+    gh project item-add "$PROJECT_ID" --owner "$ORG" --url "$URL" >/dev/null || true
+  done
 
   echo "Reset inactivity timers"
   gh api -X PUT "repos/$FULL_NAME/actions/workflows/artdaq-format-single-pkg.yml/enable"
