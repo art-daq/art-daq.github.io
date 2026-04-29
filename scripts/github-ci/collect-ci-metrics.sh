@@ -47,7 +47,7 @@ for REPO in "${packages_with_ci[@]}"; do
   PRS_URL=$(echo "https://github.com/$ORG/$REPO/pulls")
   REPO_INFO=$(gh repo view "$FULL_NAME" --json isPrivate,updatedAt)
 
-  echo "Add missing Issues and PRs to Project"
+  #echo "Add missing Issues and PRs to Project"
   gh issue list -R "$FULL_NAME" --search "no:project" --state all --limit 1000 --json url \
   | jq -r '.[].url' \
   | while read -r URL; do
@@ -62,28 +62,28 @@ for REPO in "${packages_with_ci[@]}"; do
   done
 
   if [[ "$REPO" =~ "artdaq" ]] || [[ "$REPO" =~ "trace" ]]; then
-    echo "Get most recent single-repo CI build status"
+    #echo "Get most recent single-repo CI build status"
     BUILD_DEVELOP_STATUS=$(gh run list -R "$FULL_NAME" -b "$branch" --limit 1 --json conclusion,createdAt,event,name,status,updatedAt,url --workflow artdaq-develop-cpp-ci.yml -q '.[0]')
     BUILD_SINGLE_STATUS=$(gh run list -R "$FULL_NAME" -b "$branch" --limit 1 --json conclusion,createdAt,event,name,status,updatedAt,url --workflow artdaq-build-single-pkg.yml -q '.[0]')
     TEST_SINGLE_STATUS=$(gh run list -R "$FULL_NAME" -b "$branch" --limit 1 --json conclusion,createdAt,event,name,status,updatedAt,url --workflow artdaq-test-single-pkg.yml -q '.[0]')
     FORMAT_STATUS=$(gh run list -R "$FULL_NAME" -b "$branch" --limit 1 --json conclusion,createdAt,event,name,status,updatedAt,url --workflow artdaq-format-single-pkg.yml -q '.[0]')
     WHITESPACE_STATUS=$(gh run list -R "$FULL_NAME" -b "$branch" --limit 1 --json conclusion,createdAt,event,name,status,updatedAt,url --workflow git-whitespace.yml -q '.[0]')
 
-    echo "Reset inactivity timers"
+    #echo "Reset inactivity timers"
     gh api -X PUT "repos/$FULL_NAME/actions/workflows/artdaq-develop-cpp-ci.yml/enable"
     gh api -X PUT "repos/$FULL_NAME/actions/workflows/artdaq-build-single-pkg.yml/enable"
     gh api -X PUT "repos/$FULL_NAME/actions/workflows/artdaq-test-single-pkg.yml/enable"
     gh api -X PUT "repos/$FULL_NAME/actions/workflows/artdaq-format-single-pkg.yml/enable"
     gh api -X PUT "repos/$FULL_NAME/actions/workflows/git-whitespace.yml/enable"
   else
-    echo "Get most recent single-repo CI build status"
+    #echo "Get most recent single-repo CI build status"
     BUILD_DEVELOP_STATUS=$(gh run list -R "$FULL_NAME" -b "$branch" --limit 1 --json conclusion,createdAt,event,name,status,updatedAt,url --workflow otsdaq-develop-cpp-ci.yml -q '.[0]')
     BUILD_SINGLE_STATUS=$(gh run list -R "$FULL_NAME" -b "$branch" --limit 1 --json conclusion,createdAt,event,name,status,updatedAt,url --workflow otsdaq-build-single-pkg.yml -q '.[0]')
     TEST_SINGLE_STATUS=$(gh run list -R "$FULL_NAME" -b "$branch" --limit 1 --json conclusion,createdAt,event,name,status,updatedAt,url --workflow otsdaq-test-single-pkg.yml -q '.[0]')
     FORMAT_STATUS=$(gh run list -R "$FULL_NAME" -b "$branch" --limit 1 --json conclusion,createdAt,event,name,status,updatedAt,url --workflow otsdaq-format-single-pkg.yml -q '.[0]')
     WHITESPACE_STATUS=$(gh run list -R "$FULL_NAME" -b "$branch" --limit 1 --json conclusion,createdAt,event,name,status,updatedAt,url --workflow git-whitespace.yml -q '.[0]')
 
-    echo "Reset inactivity timers"
+    #echo "Reset inactivity timers"
     gh api -X PUT "repos/$FULL_NAME/actions/workflows/otsdaq-develop-cpp-ci.yml/enable"
     gh api -X PUT "repos/$FULL_NAME/actions/workflows/otsdaq-build-single-pkg.yml/enable"
     gh api -X PUT "repos/$FULL_NAME/actions/workflows/otsdaq-test-single-pkg.yml/enable"
@@ -97,7 +97,7 @@ for REPO in "${packages_with_ci[@]}"; do
   FORMAT_STATUS=${FORMAT_STATUS:-"{}"}
   WHITESPACE_STATUS=${WHITESPACE_STATUS:-"{}"}
 
-  echo "Prepare JSON fragment"
+  #echo "Prepare JSON fragment"
   JSON_ENTRY=$(jq -n \
     --arg repo "$REPO" \
     --argjson repo_info "$REPO_INFO" \
@@ -173,7 +173,7 @@ for REPO in "${packages_without_ci[@]}"; do
   FORMAT_STATUS=${FORMAT_STATUS:-"{}"}
   WHITESPACE_STATUS=${WHITESPACE_STATUS:-"{}"}
 
-  echo "Add missing Issues and PRs to Project"
+  #echo "Add missing Issues and PRs to Project"
   gh issue list -R "$FULL_NAME" --search "no:project" --state all --limit 1000 --json url \
   | jq -r '.[].url' \
   | while read -r URL; do
@@ -187,11 +187,11 @@ for REPO in "${packages_without_ci[@]}"; do
     gh project item-add "$PROJECT_NUMBER" --owner "$ORG" --url "$URL" >/dev/null || true
   done
 
-  echo "Reset inactivity timers"
+  #echo "Reset inactivity timers"
   gh api -X PUT "repos/$FULL_NAME/actions/workflows/artdaq-format-single-pkg.yml/enable"
   gh api -X PUT "repos/$FULL_NAME/actions/workflows/git-whitespace.yml/enable"
 
-  echo "Prepare JSON fragment"
+  #echo "Prepare JSON fragment"
   JSON_ENTRY=$(jq -n \
     --arg repo "$REPO" \
     --argjson repo_info "$REPO_INFO" \
