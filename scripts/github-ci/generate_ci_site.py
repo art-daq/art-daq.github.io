@@ -90,7 +90,7 @@ def generate_site(json_input_path):
     ci_repos = []
     noci_repos = []
     for repo in repos:
-        if repo.get("build_develop") != None:
+        if repo.get("build_develop"):
             ci_repos.append(repo)
         else:
             noci_repos.append(repo)
