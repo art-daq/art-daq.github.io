@@ -24,6 +24,21 @@ gh api -X PUT "repos/art-daq/daq-docker/actions/workflows/otsdaq-spack-selfhoste
 gh api -X PUT "repos/art-daq/.github/actions/workflows/artdaq-lcov.yml/enable"
 gh api -X PUT "repos/art-daq/.github/actions/workflows/otsdaq-lcov.yml/enable"
 
+# Add missing Issues and PRs to Project
+PROJECT_NUMBER=1
+PROJECT_ID="$(gh project view "$PROJECT_NUMBER" --owner "$OWNER" --format json --jq '.id')"
+gh issue list --search "org:art-daq" --state all --limit 1000 --json url \
+| jq -r '.[].url' \
+| while read -r URL; do
+    # item-add is idempotent-ish: if it errors on duplicates, you can ignore failures
+    gh project item-add "$PROJECT_ID" --owner "$OWNER" --url "$URL" >/dev/null || true
+  done
+  gh pr list --search "org:art-daq" --state all --limit 1000 --json url \
+| jq -r '.[].url' \
+| while read -r URL; do
+    gh project item-add "$PROJECT_ID" --owner "$OWNER" --url "$URL" >/dev/null || true
+  done
+
 for REPO in "${packages_with_ci[@]}"; do
   FULL_NAME="$ORG/$REPO"
   echo "This repo: $FULL_NAME"
