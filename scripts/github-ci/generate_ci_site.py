@@ -106,37 +106,54 @@ def generate_site(json_input_path):
         round((passing_repos / total_repos) * 100, 1) if total_repos else 0
     )
 
+    token=os.environ.get("GH_TOKEN")
+    def download_badge(url):
+        import requests
+        headers = {
+            "Authorization": f"token {token}"
+        }
+
+        # Download the file
+        response = requests.get(url, headers=headers)
+        return response.content
+
     last_updated = datetime.now(UTC).strftime("%Y-%m-%d %H:%M UTC")
     workflow_badges = [
         {
             "image": "https://github.com/art-daq/.github/actions/workflows/otsdaq-lcov.yml/badge.svg",
             "link": "https://github.com/art-daq/.github/actions/workflows/otsdaq-lcov.yml",
             "alt": "Create otsdaq LCOV coverage report",
+            "svg": download_badge("https://github.com/art-daq/.github/actions/workflows/otsdaq-lcov.yml/badge.svg"),
         },
         {
             "image": "https://github.com/art-daq/.github/actions/workflows/artdaq-lcov.yml/badge.svg",
             "link": "https://github.com/art-daq/.github/actions/workflows/artdaq-lcov.yml",
             "alt": "Create artdaq LCOV coverage report",
+            "svg": download_badge("https://github.com/art-daq/.github/actions/workflows/artdaq-lcov.yml/badge.svg"),
         },
         {
             "image": "https://github.com/art-daq/daq-docker/actions/workflows/alma9-spack-base.yaml/badge.svg",
             "link": "https://github.com/art-daq/daq-docker/actions/workflows/alma9-spack-base.yaml",
             "alt": "Build alma9-spack docker image",
+            "svg": download_badge("https://github.com/art-daq/daq-docker/actions/workflows/alma9-spack-base.yaml/badge.svg"),
         },
         {
             "image": "https://github.com/art-daq/daq-docker/actions/workflows/alma10-spack-base.yaml/badge.svg",
             "link": "https://github.com/art-daq/daq-docker/actions/workflows/alma10-spack-base.yaml",
             "alt": "Build alma10-spack docker image",
+            "svg": download_badge("https://github.com/art-daq/daq-docker/actions/workflows/alma10-spack-base.yaml/badge.svg"),
         },
         {
             "image": "https://github.com/art-daq/daq-docker/actions/workflows/artdaq-spack-selfhosted.yaml/badge.svg",
             "link": "https://github.com/art-daq/daq-docker/actions/workflows/artdaq-spack-selfhosted.yaml",
             "alt": "Build artdaq-spack docker image (self hosted)",
+            "svg": download_badge("https://github.com/art-daq/daq-docker/actions/workflows/artdaq-spack-selfhosted.yaml/badge.svg"),
         },
         {
             "image": "https://github.com/art-daq/daq-docker/actions/workflows/otsdaq-spack-selfhosted.yaml/badge.svg",
             "link": "https://github.com/art-daq/daq-docker/actions/workflows/otsdaq-spack-selfhosted.yaml",
             "alt": "Build otsdaq-spack docker image (self hosted)",
+            "svg": download_badge("https://github.com/art-daq/.github/actions/workflows/otsdaq-spack-selfhosted.yaml/badge.svg"),
         },
     ]
 

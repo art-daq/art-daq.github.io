@@ -14,7 +14,8 @@
 <div class="badge-summary">
     {% for badge in workflow_badges %}
     <a href="{{ badge.link }}">
-        <img src="{{ badge.image }}" alt="{{ badge.alt }}">
+        <!--<img src="{{ badge.image }}" alt="{{ badge.alt }}">-->
+        {{ badge.svg }}
     </a><br />
     {% endfor %}
 </div>

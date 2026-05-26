@@ -107,8 +107,8 @@ jobs:
         cp -r ${{ steps.set_paths.outputs.otsdaq_doxy_html_path }} ci-dashboard/scripts/github-ci/site/otsdaq_doxygen
         cd ci-dashboard/scripts/github-ci/
         ./collect-ci-metrics.sh
-        #echo "CI Summary JSON:"
-        #cat ci_summary.json
+        echo "CI Summary JSON:"
+        cat ci_summary.json
         python generate_ci_site.py --json_input ci_summary.json
 
     - name: Upload pages artifact
