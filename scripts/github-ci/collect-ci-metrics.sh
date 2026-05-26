@@ -11,6 +11,7 @@ source $SCRIPT_DIR/repo.sh || exit $?
 ORG="art-daq"
 REPOS=$(gh repo list "$ORG" --limit 100 --json name -q '.[].name')
 OUTFILE="ci_summary.json"
+PROJECT_NUMBER=1
 
 echo "{" > "$OUTFILE"
 FIRST=true
@@ -24,7 +25,7 @@ gh api -X PUT "repos/art-daq/daq-docker/actions/workflows/otsdaq-spack-selfhoste
 gh api -X PUT "repos/art-daq/.github/actions/workflows/artdaq-lcov.yml/enable"
 gh api -X PUT "repos/art-daq/.github/actions/workflows/otsdaq-lcov.yml/enable"
 
-# collect special job statuses
+echo "Collectint \"special\" job statuses"
 NIGHTLY_STATUS=$(gh run list -R "art-daq/art-daq.github.io" --limit 2 --json conclusion,createdAt,event,name,status,updatedAt,url --workflow nightly-ci-dashboard.yml -q '.[1]')
 ALMA9_STATUS=$(gh run list -R "art-daq/daq-docker" --limit 1 --json conclusion,createdAt,event,name,status,updatedAt,url --workflow alma9-spack-base.yaml -q '.[0]')
 ALMA10_STATUS=$(gh run list -R "art-daq/daq-docker" --limit 1 --json conclusion,createdAt,event,name,status,updatedAt,url --workflow alma10-spack-base.yaml -q '.[0]')
@@ -54,8 +55,6 @@ if [[ $retval == 0 ]]; then
 else
   echo "Non-zero return value for central CI jobs. Skipping..."
 fi
-
-PROJECT_NUMBER=1
 
 echo "Collecting statistics for CI-enabled repos"
 echo '"repos": [' >> "$OUTFILE"
