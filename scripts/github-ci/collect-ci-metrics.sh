@@ -12,7 +12,7 @@ ORG="art-daq"
 REPOS=$(gh repo list "$ORG" --limit 100 --json name -q '.[].name')
 OUTFILE="ci_summary.json"
 
-echo "[" > "$OUTFILE"
+echo "{" > "$OUTFILE"
 FIRST=true
 
 echo "Reset inactivity timers for special workflows"
@@ -24,9 +24,41 @@ gh api -X PUT "repos/art-daq/daq-docker/actions/workflows/otsdaq-spack-selfhoste
 gh api -X PUT "repos/art-daq/.github/actions/workflows/artdaq-lcov.yml/enable"
 gh api -X PUT "repos/art-daq/.github/actions/workflows/otsdaq-lcov.yml/enable"
 
+# collect special job statuses
+NIGHTLY_STATUS=$(gh run list -R "art-daq/art-daq.github.io" --limit 1 --json conclusion,createdAt,event,name,status,updatedAt,url --workflow nightly-ci-dashboard.yml -q '.[0]')
+ALMA9_STATUS=$(gh run list -R "art-daq/daq-docker" --limit 1 --json conclusion,createdAt,event,name,status,updatedAt,url --workflow alma9-spack-base.yaml -q '.[0]')
+ALMA10_STATUS=$(gh run list -R "art-daq/daq-docker" --limit 1 --json conclusion,createdAt,event,name,status,updatedAt,url --workflow alma10-spack-base.yaml -q '.[0]')
+ARTDAQ_STATUS=$(gh run list -R "art-daq/daq-docker" --limit 1 --json conclusion,createdAt,event,name,status,updatedAt,url --workflow artdaq-spack-selfhosted.yaml -q '.[0]')
+OTSDAQ_STATUS=$(gh run list -R "art-daq/daq-docker" --limit 1 --json conclusion,createdAt,event,name,status,updatedAt,url --workflow otsdaq-spack-selfhosted.yaml -q '.[0]')
+ARTDAQ_LCOV_STATUS=$(gh run list -R "art-daq/.github" --limit 1 --json conclusion,createdAt,event,name,status,updatedAt,url --workflow artdaq-lcov.yml -q '.[0]')
+OTSDAQ_LCOV_STATUS=$(gh run list -R "art-daq/.github" --limit 1 --json conclusion,createdAt,event,name,status,updatedAt,url --workflow otsdaq-lcov.yml -q '.[0]')
+echo "jobs: [" >> "$OUTFILE"
+
+  #echo "Prepare JSON fragment"
+  JSON_ENTRY=$(jq -n \
+    --argjson nightly "$NIGHTLY_STATUS" \
+    --argjson alma9 "$ALMA9_STATUS" \
+    --argjson alma10 "$ALMA10_STATUS" \
+    --argjson artdaq "$ARTDAQ_STATUS" \
+    --argjson otsdaq "$OTSDAQ_STATUS" \
+    --argjson artdaq_lcov "$ARTDAQ_LCOV_STATUS" \
+    --argjson otsdaq_lcov "$OTSDAQ_LCOV_STATUS" \
+    '{
+      nightly: $nightly,
+      alma9: $alma9,
+      alma10: $alma10,
+      artdaq: $artdaq,
+      otsdaq: $otsdaq,
+      artdaq_lcov: $artdaq_lcov,
+      otsdaq_lcov: $otsdaq_lcov,
+    }')
+
+echo "]," >> "$OUTFILE"
 PROJECT_NUMBER=1
 
 echo "Collecting statistics for CI-enabled repos"
+echo "repos: [" >> "$OUTFILE"
+
 for REPO in "${packages_with_ci[@]}"; do
   FULL_NAME="$ORG/$REPO"
   echo "This repo: $FULL_NAME"

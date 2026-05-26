@@ -14,8 +14,20 @@
 <div class="badge-summary">
     {% for badge in workflow_badges %}
     <a href="{{ badge.link }}">
-        <!--<img src="{{ badge.image }}" alt="{{ badge.alt }}">-->
-        {{ badge.svg }}
+            {{ badge.name }}
+            <span class="status-{{ badge.conclusion }}">
+                {% if badge.conclusion | length %}
+                {{ badge.conclusion | capitalize }}
+                {% else %}
+                {{ badge.status | capitalize }}
+                {% endif %}
+            </span>
+        <span class="duration-{{badge.createdAt | get_duration_class(badge.updatedAt)}}">
+            {{badge.createdAt | format_duration(badge.updatedAt)}}
+        </span>
+        <span class="duration-{{badge.createdAt | get_time_class}}">
+            {{badge.createdAt | format_time}}
+        </span>
     </a><br />
     {% endfor %}
 </div>

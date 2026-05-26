@@ -1,7 +1,5 @@
-import re
 import argparse
 import json
-import os
 from jinja2 import Environment, FileSystemLoader
 from pathlib import Path
 from datetime import datetime, UTC
@@ -73,7 +71,9 @@ def format_duration(time_started, time_ended):
 def generate_site(json_input_path):
     """Render html files from templates to generate the site."""
     with open(json_input_path, "r") as f:
-        repos = json.load(f)
+        json_content = json.load(f)
+        repos = json_content.get("repos", [])
+        jobs = json_content.get("jobs", [])
 
     env = Environment(loader=FileSystemLoader("templates"))
     env.filters["format_datetime"] = format_datetime
@@ -107,68 +107,7 @@ def generate_site(json_input_path):
         round((passing_repos / total_repos) * 100, 1) if total_repos else 0
     )
 
-    token = os.environ.get("GH_TOKEN")
-
-    def download_badge(url):
-        import requests
-
-        headers = {"Authorization": f"Bearer {token}"}
-
-        # Download the file
-        response = requests.get(url, headers=headers)
-        return str(response.content, "utf-8")
-
     last_updated = datetime.now(UTC).strftime("%Y-%m-%d %H:%M UTC")
-    workflow_badges = [
-        {
-            "image": "https://github.com/art-daq/.github/actions/workflows/otsdaq-lcov.yml/badge.svg",
-            "link": "https://github.com/art-daq/.github/actions/workflows/otsdaq-lcov.yml",
-            "alt": "Create otsdaq LCOV coverage report",
-            "svg": download_badge(
-                "https://github.com/art-daq/.github/actions/workflows/otsdaq-lcov.yml/badge.svg"
-            ),
-        },
-        {
-            "image": "https://github.com/art-daq/.github/actions/workflows/artdaq-lcov.yml/badge.svg",
-            "link": "https://github.com/art-daq/.github/actions/workflows/artdaq-lcov.yml",
-            "alt": "Create artdaq LCOV coverage report",
-            "svg": download_badge(
-                "https://github.com/art-daq/.github/actions/workflows/artdaq-lcov.yml/badge.svg"
-            ),
-        },
-        {
-            "image": "https://github.com/art-daq/daq-docker/actions/workflows/alma9-spack-base.yaml/badge.svg",
-            "link": "https://github.com/art-daq/daq-docker/actions/workflows/alma9-spack-base.yaml",
-            "alt": "Build alma9-spack docker image",
-            "svg": download_badge(
-                "https://github.com/art-daq/daq-docker/actions/workflows/alma9-spack-base.yaml/badge.svg"
-            ),
-        },
-        {
-            "image": "https://github.com/art-daq/daq-docker/actions/workflows/alma10-spack-base.yaml/badge.svg",
-            "link": "https://github.com/art-daq/daq-docker/actions/workflows/alma10-spack-base.yaml",
-            "alt": "Build alma10-spack docker image",
-            "svg": download_badge(
-                "https://github.com/art-daq/daq-docker/actions/workflows/alma10-spack-base.yaml/badge.svg"
-            ),
-        },
-        {
-            "image": "https://github.com/art-daq/daq-docker/actions/workflows/artdaq-spack-selfhosted.yaml/badge.svg",
-            "link": "https://github.com/art-daq/daq-docker/actions/workflows/artdaq-spack-selfhosted.yaml",
-            "alt": "Build artdaq-spack docker image (self hosted)",
-            "svg": download_badge(
-                "https://github.com/art-daq/daq-docker/actions/workflows/artdaq-spack-selfhosted.yaml/badge.svg"
-            ),
-        },
-        {
-            "image": "https://github.com/art-daq/daq-docker/actions/workflows/otsdaq-spack-selfhosted.yaml/badge.svg",
-            "link": "https://github.com/art-daq/daq-docker/actions/workflows/otsdaq-spack-selfhosted.yaml",
-            "alt": "Build otsdaq-spack docker image (self hosted)",
-            "svg": download_badge(
-                "https://github.com/art-daq/.github/actions/workflows/otsdaq-spack-selfhosted.yaml/badge.svg"
-            ),
-        },
-    ]
 
     # Content of the index page
     context = {
@@ -178,7 +117,7 @@ def generate_site(json_input_path):
         "total_issues": total_issues,
         "total_prs": total_prs,
         "passing_percentage": passing_percentage,
-        "workflow_badges": workflow_badges,
+        "workflow_badges": jobs,
     }
 
     index_template = env.get_template("index_template.html")
