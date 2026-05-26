@@ -25,7 +25,7 @@ gh api -X PUT "repos/art-daq/.github/actions/workflows/artdaq-lcov.yml/enable"
 gh api -X PUT "repos/art-daq/.github/actions/workflows/otsdaq-lcov.yml/enable"
 
 # collect special job statuses
-NIGHTLY_STATUS=$(gh run list -R "art-daq/art-daq.github.io" --limit 1 --json conclusion,createdAt,event,name,status,updatedAt,url --workflow nightly-ci-dashboard.yml -q '.[0]')
+NIGHTLY_STATUS=$(gh run list -R "art-daq/art-daq.github.io" --limit 2 --json conclusion,createdAt,event,name,status,updatedAt,url --workflow nightly-ci-dashboard.yml -q '.[1]')
 ALMA9_STATUS=$(gh run list -R "art-daq/daq-docker" --limit 1 --json conclusion,createdAt,event,name,status,updatedAt,url --workflow alma9-spack-base.yaml -q '.[0]')
 ALMA10_STATUS=$(gh run list -R "art-daq/daq-docker" --limit 1 --json conclusion,createdAt,event,name,status,updatedAt,url --workflow alma10-spack-base.yaml -q '.[0]')
 ARTDAQ_STATUS=$(gh run list -R "art-daq/daq-docker" --limit 1 --json conclusion,createdAt,event,name,status,updatedAt,url --workflow artdaq-spack-selfhosted.yaml -q '.[0]')
@@ -43,7 +43,7 @@ JSON_ENTRY=$(jq -n \
   --argjson otsdaq "$OTSDAQ_STATUS" \
   --argjson artdaq_lcov "$ARTDAQ_LCOV_STATUS" \
   --argjson otsdaq_lcov "$OTSDAQ_LCOV_STATUS" \
-  '{
+  '[
     nightly: $nightly,
     alma9: $alma9,
     alma10: $alma10,
@@ -51,7 +51,7 @@ JSON_ENTRY=$(jq -n \
     otsdaq: $otsdaq,
     artdaq_lcov: $artdaq_lcov,
     otsdaq_lcov: $otsdaq_lcov,
-  }')
+  ]')
 retval=$?
 
 if [[ $retval == 0 ]]; then

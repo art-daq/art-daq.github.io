@@ -13,7 +13,7 @@
 <h2>Workflow Statuses</h2>
 <div class="badge-summary">
     {% for badge in workflow_badges %}
-    <a href="{{ badge.link }}">
+    <a href="{{ badge.url }}">
             {{ badge.name }}
             <span class="status-{{ badge.conclusion }}">
                 {% if badge.conclusion | length %}
