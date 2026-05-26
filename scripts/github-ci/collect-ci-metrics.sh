@@ -32,7 +32,7 @@ ARTDAQ_STATUS=$(gh run list -R "art-daq/daq-docker" --limit 1 --json conclusion,
 OTSDAQ_STATUS=$(gh run list -R "art-daq/daq-docker" --limit 1 --json conclusion,createdAt,event,name,status,updatedAt,url --workflow otsdaq-spack-selfhosted.yaml -q '.[0]')
 ARTDAQ_LCOV_STATUS=$(gh run list -R "art-daq/.github" --limit 1 --json conclusion,createdAt,event,name,status,updatedAt,url --workflow artdaq-lcov.yml -q '.[0]')
 OTSDAQ_LCOV_STATUS=$(gh run list -R "art-daq/.github" --limit 1 --json conclusion,createdAt,event,name,status,updatedAt,url --workflow otsdaq-lcov.yml -q '.[0]')
-echo '"jobs": [' >> "$OUTFILE"
+echo '"jobs": ' >> "$OUTFILE"
 
 #echo "Prepare JSON fragment"
 JSON_ENTRY=$(jq -n \
@@ -60,7 +60,7 @@ else
   echo "Non-zero return value for central CI jobs. Skipping..."
 fi
 
-echo "]," >> "$OUTFILE"
+echo "," >> "$OUTFILE"
 PROJECT_NUMBER=1
 
 echo "Collecting statistics for CI-enabled repos"
@@ -272,5 +272,6 @@ for REPO in "${packages_without_ci[@]}"; do
 done
 
 echo "]" >> "$OUTFILE"
+echo "}" >> "$OUTFILE"
 
 echo "Results saved to $OUTFILE"
