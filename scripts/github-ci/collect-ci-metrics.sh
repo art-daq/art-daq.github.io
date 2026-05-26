@@ -32,7 +32,7 @@ ARTDAQ_STATUS=$(gh run list -R "art-daq/daq-docker" --limit 1 --json conclusion,
 OTSDAQ_STATUS=$(gh run list -R "art-daq/daq-docker" --limit 1 --json conclusion,createdAt,event,name,status,updatedAt,url --workflow otsdaq-spack-selfhosted.yaml -q '.[0]')
 ARTDAQ_LCOV_STATUS=$(gh run list -R "art-daq/.github" --limit 1 --json conclusion,createdAt,event,name,status,updatedAt,url --workflow artdaq-lcov.yml -q '.[0]')
 OTSDAQ_LCOV_STATUS=$(gh run list -R "art-daq/.github" --limit 1 --json conclusion,createdAt,event,name,status,updatedAt,url --workflow otsdaq-lcov.yml -q '.[0]')
-echo '"jobs": [' >> "$OUTFILE"
+
 
 #echo "Prepare JSON fragment"
 JSON_ENTRY=$(jq -n \
@@ -43,16 +43,18 @@ JSON_ENTRY=$(jq -n \
   --argjson otsdaq "$OTSDAQ_STATUS" \
   --argjson artdaq_lcov "$ARTDAQ_LCOV_STATUS" \
   --argjson otsdaq_lcov "$OTSDAQ_LCOV_STATUS" \
-  '$nightly, $alma9, $alma10, $artdaq, $otsdaq, $artdaq_lcov, $otsdaq_lcov')
+  '[ $nightly, $alma9, $alma10, $artdaq, $otsdaq, $artdaq_lcov, $otsdaq_lcov ]'\
+)
 retval=$?
 
 if [[ $retval == 0 ]]; then
+  echo '"jobs": ' >> "$OUTFILE"
   echo "$JSON_ENTRY" >> "$OUTFILE"
+  echo "," >> "$OUTFILE"
 else
   echo "Non-zero return value for central CI jobs. Skipping..."
 fi
 
-echo "]," >> "$OUTFILE"
 PROJECT_NUMBER=1
 
 echo "Collecting statistics for CI-enabled repos"
