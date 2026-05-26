@@ -44,13 +44,13 @@ JSON_ENTRY=$(jq -n \
   --argjson artdaq_lcov "$ARTDAQ_LCOV_STATUS" \
   --argjson otsdaq_lcov "$OTSDAQ_LCOV_STATUS" \
   '[
-    nightly: $nightly,
-    alma9: $alma9,
-    alma10: $alma10,
-    artdaq: $artdaq,
-    otsdaq: $otsdaq,
-    artdaq_lcov: $artdaq_lcov,
-    otsdaq_lcov: $otsdaq_lcov,
+    $nightly,
+    $alma9,
+    $alma10,
+    $artdaq,
+    $otsdaq,
+    $artdaq_lcov,
+    $otsdaq_lcov,
   ]')
 retval=$?
 
