@@ -79,6 +79,7 @@
             <th>Develop Build Status</th>
             <th>Single-Pkg Build Status</th>
             <th>Single-Pkg Test Status</th>
+            <th>Integration Test Status</th>
             <th>Code Format Status</th>
             <th>Git Whitespace Check Status</th>
         </tr>
@@ -148,6 +149,25 @@
                         {{ repo.test_single.conclusion | capitalize }}
                         {% else %}
                         {{ repo.test_single.status | capitalize }}
+                        {% endif %}
+                    </span>
+                </a>
+                <span class="duration-{{repo.test_single.createdAt | get_duration_class(repo.test_single.updatedAt)}}">
+                    {{repo.test_single.createdAt | format_duration(repo.test_single.updatedAt)}}
+                </span>
+                <span class="duration-{{repo.test_single.createdAt | get_time_class}}">
+                    {{repo.test_single.createdAt | format_time}}
+                </span>
+                {% endif %}
+            </td>
+            <td>
+                {% if repo.integtest %}
+                <a href="{{ repo.integtest.url }}">
+                    <span class="status-{{ repo.integtest.conclusion }}">
+                        {% if repo.integtest.conclusion | length %}
+                        {{ repo.integtest.conclusion | capitalize }}
+                        {% else %}
+                        {{ repo.integtest.status | capitalize }}
                         {% endif %}
                     </span>
                 </a>

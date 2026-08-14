@@ -100,12 +100,14 @@ for REPO in "${packages_with_ci[@]}"; do
     TEST_SINGLE_STATUS=$(gh run list -R "$FULL_NAME" -b "$branch" --limit 1 --json conclusion,createdAt,event,name,status,updatedAt,url --workflow artdaq-test-single-pkg.yml -q '.[0]')
     FORMAT_STATUS=$(gh run list -R "$FULL_NAME" -b "$branch" --limit 1 --json conclusion,createdAt,event,name,status,updatedAt,url --workflow artdaq-format-single-pkg.yml -q '.[0]')
     WHITESPACE_STATUS=$(gh run list -R "$FULL_NAME" -b "$branch" --limit 1 --json conclusion,createdAt,event,name,status,updatedAt,url --workflow git-whitespace.yml -q '.[0]')
+    INTEGTEST_STATUS=$(gh run list -R "$FULL_NAME" -b "$branch" --limit 1 --json conclusion,createdAt,event,name,status,updatedAt,url --workflow artdaq-integration-tests.yml -q '.[0]')
 
     #echo "Reset inactivity timers"
     gh api -X PUT "repos/$FULL_NAME/actions/workflows/artdaq-develop-cpp-ci.yml/enable"
     gh api -X PUT "repos/$FULL_NAME/actions/workflows/artdaq-build-single-pkg.yml/enable"
     gh api -X PUT "repos/$FULL_NAME/actions/workflows/artdaq-test-single-pkg.yml/enable"
     gh api -X PUT "repos/$FULL_NAME/actions/workflows/artdaq-format-single-pkg.yml/enable"
+    gh api -X PUT "repos/$FULL_NAME/actions/workflows/artdaq-integration-tests.yml/enable"
     gh api -X PUT "repos/$FULL_NAME/actions/workflows/git-whitespace.yml/enable"
   else
     #echo "Get most recent single-repo CI build status"
@@ -128,6 +130,7 @@ for REPO in "${packages_with_ci[@]}"; do
   TEST_SINGLE_STATUS=${TEST_SINGLE_STATUS:-null}
   FORMAT_STATUS=${FORMAT_STATUS:-null}
   WHITESPACE_STATUS=${WHITESPACE_STATUS:-null}
+  INTEGTEST_STATUS=${INTEGTEST_STATUS:-null}
 
   #echo "Prepare JSON fragment"
   JSON_ENTRY=$(jq -n \
@@ -144,6 +147,7 @@ for REPO in "${packages_with_ci[@]}"; do
     --argjson test_single "$TEST_SINGLE_STATUS" \
     --argjson format "$FORMAT_STATUS" \
     --argjson whitespace "$WHITESPACE_STATUS" \
+    --argjson integtest "$INTEGTEST_STATUS" \
     '{
       repo: $repo,
       repo_info: $repo_info,
@@ -158,6 +162,7 @@ for REPO in "${packages_with_ci[@]}"; do
       test_single: $test_single,
       format: $format,
       whitespace: $whitespace,
+      integtest: $integtest,
     }')
   retval=$?
 
