@@ -100,7 +100,9 @@ for REPO in "${packages_with_ci[@]}"; do
     TEST_SINGLE_STATUS=$(gh run list -R "$FULL_NAME" -b "$branch" --limit 1 --json conclusion,createdAt,event,name,status,updatedAt,url --workflow artdaq-test-single-pkg.yml -q '.[0]')
     FORMAT_STATUS=$(gh run list -R "$FULL_NAME" -b "$branch" --limit 1 --json conclusion,createdAt,event,name,status,updatedAt,url --workflow artdaq-format-single-pkg.yml -q '.[0]')
     WHITESPACE_STATUS=$(gh run list -R "$FULL_NAME" -b "$branch" --limit 1 --json conclusion,createdAt,event,name,status,updatedAt,url --workflow git-whitespace.yml -q '.[0]')
-    INTEGTEST_STATUS=$(gh run list -R "$FULL_NAME" -b "$branch" --limit 1 --json conclusion,createdAt,event,name,status,updatedAt,url --workflow artdaq-integration-tests.yml -q '.[0]')
+    INTEGTEST_STATUS=$(gh run list -R "$FULL_NAME" -b "$branch" --limit 1 --json conclusion,createdAt,databaseId,event,name,status,updatedAt,url --workflow artdaq-integration-tests.yml -q '.[0]')
+    INTEGTEST_RUN_ID=$(echo "$INTEGTEST_STATUS" | jq -r '.databaseId')
+    INTEGTEST_SUMMARY=$(get_workflow_summary.sh $FULL_NAME $INTEGTEST_RUN_ID)
 
     #echo "Reset inactivity timers"
     gh api -X PUT "repos/$FULL_NAME/actions/workflows/artdaq-develop-cpp-ci.yml/enable"
@@ -131,6 +133,7 @@ for REPO in "${packages_with_ci[@]}"; do
   FORMAT_STATUS=${FORMAT_STATUS:-null}
   WHITESPACE_STATUS=${WHITESPACE_STATUS:-null}
   INTEGTEST_STATUS=${INTEGTEST_STATUS:-null}
+  INTEGTEST_SUMMARY=${INTEGTEST_SUMMARY:-null}
 
   #echo "Prepare JSON fragment"
   JSON_ENTRY=$(jq -n \
@@ -148,6 +151,7 @@ for REPO in "${packages_with_ci[@]}"; do
     --argjson format "$FORMAT_STATUS" \
     --argjson whitespace "$WHITESPACE_STATUS" \
     --argjson integtest "$INTEGTEST_STATUS" \
+    --argjson integtest_summary "$INTEGTEST_SUMMARY" \
     '{
       repo: $repo,
       repo_info: $repo_info,
@@ -163,6 +167,7 @@ for REPO in "${packages_with_ci[@]}"; do
       format: $format,
       whitespace: $whitespace,
       integtest: $integtest,
+      integtest_summary: $integtest_summary
     }')
   retval=$?
 
