@@ -171,32 +171,26 @@
                         {% endif %}
                     </span>
                 </a>
-                <span class="duration-{{repo.test_single.createdAt | get_duration_class(repo.test_single.updatedAt)}}">
-                    {{repo.test_single.createdAt | format_duration(repo.test_single.updatedAt)}}
+                <span class="duration-{{repo.integtest.createdAt | get_duration_class(repo.integtest.updatedAt)}}">
+                    {{repo.integtest.createdAt | format_duration(repo.integtest.updatedAt)}}
                 </span>
-                <span class="duration-{{repo.test_single.createdAt | get_time_class}}">
-                    {{repo.test_single.createdAt | format_time}}
+                <span class="duration-{{repo.integtest.createdAt | get_time_class}}">
+                    {{repo.integtest.createdAt | format_time}}
                 </span>
 
                 {% if repo.integtest_summary %}
-                <br/>
+                <br />
                 {{repo.integtest_summary.job_count}} Jobs total
                 <br />
-                {% for job in repo.integtest_summary.failed_jobs %}
+                {% for job in repo.integtest_summary.jobs %}
                 <span class="status-{{ job.conclusion }}">
-                    Failed: {{ job.job }}
+                    {{ job.job }}: {{ job.conclusion }}
                 </span>
-                <br />
-                {% endfor %}
-                {% for job in repo.integtest_summary.skipped_jobs %}
-                <span class="status-{{ job.conclusion }}">
-                    Skipped: {{ job.job }}
+                <span class="duration-{{job.createdAt | get_duration_class(job.updatedAt)}}">
+                    {{job.createdAt | format_duration(job.updatedAt)}}
                 </span>
-                <br />
-                {% endfor %}
-                {% for job in repo.integtest_summary.cancelled_jobs %}
-                <span class="status-{{ job.conclusion }}">
-                    Cancelled: {{ job.job }}
+                <span class="duration-{{job.createdAt | get_time_class}}">
+                    {{job.createdAt | format_time}}
                 </span>
                 <br />
                 {% endfor %}

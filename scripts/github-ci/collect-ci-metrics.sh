@@ -17,12 +17,13 @@ gh api /repos/$REPO/actions/runs/${RUN_ID}/jobs \
          --arg actor      "$ACTOR_LOGIN"     \
          --arg event      "$EVENT_TYPE"      \
          --arg html_url   "$HTML_URL" '
-def job_summary(status):
+def job_summary:
   [.jobs[]
-   | select(.conclusion == status)
    | {
        job: .name,
-       conclusion: .conclusion
+       conclusion: .conclusion,
+       createdAt: .createdAt,
+       updatedAt: .updatedAt,
      }
   ];
 
@@ -40,9 +41,7 @@ def job_count:
   event:      $event,
   html_url:   $html_url,
   job_count:  job_count,
-  failed_jobs:    job_summary("failure"),
-  skipped_jobs:   job_summary("skipped"),
-  cancelled_jobs: job_summary("cancelled")
+  jobs:    job_summary
 }
 '
 

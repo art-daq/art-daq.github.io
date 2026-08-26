@@ -62,14 +62,11 @@ def format_duration(time_started, time_ended):
     dtime_started = format_datetime(time_started)
     dtime_ended = format_datetime(time_ended)
     diff = dtime_ended - dtime_started
-    print(f"Duration: {dtime_ended} - {dtime_started} = {diff.total_seconds()} seconds")
-    duration = f"in {diff.total_seconds() / 3600.0:.2f} h"
     if diff.total_seconds() < 60:
-        duration = f"in {diff.total_seconds():.0f} s"
-    elif diff.total_seconds() < 3600:
-        duration = f"in {diff.total_seconds() / 60.0:.2f} m"
-    print(f"Duration: {duration}")
-    return duration
+        return f"in {diff.total_seconds():.0f} s"
+    if diff.total_seconds() < 3600:
+        return f"in {diff.total_seconds() / 60.0:.2f} m"
+    return f"in {diff.total_seconds() / 3600.0:.2f} h"
 
 
 def generate_site(json_input_path):
