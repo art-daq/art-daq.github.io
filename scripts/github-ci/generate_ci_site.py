@@ -1,5 +1,6 @@
 import argparse
 import json
+import re
 from jinja2 import Environment, FileSystemLoader
 from pathlib import Path
 from datetime import datetime, UTC
@@ -69,6 +70,12 @@ def format_duration(time_started, time_ended):
     return f"in {diff.total_seconds() / 3600.0:.2f} h"
 
 
+def integtest_job_name(job):
+    match = re.search(r"Run Integration tests / run_integ_tests \((.*?)\)", job)
+    if match:
+        return match.group()
+    return job
+
 def generate_site(json_input_path):
     """Render html files from templates to generate the site."""
     with open(json_input_path, "r") as f:
@@ -83,6 +90,7 @@ def generate_site(json_input_path):
     env.filters["get_duration_class"] = get_duration_class
     env.filters["format_duration"] = format_duration
     env.filters["get_branch_pr_count"] = get_branch_pr_count
+    env.filters["integtest_job_name"] = integtest_job_name
 
     index_template = env.get_template("index_template.html")
 
