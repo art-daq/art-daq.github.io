@@ -85,6 +85,10 @@ a:hover {
     color: darkorange;
 }
 
+.status-cancelled {
+    color: darkgray;
+}
+
 .duration-short {
     color: green;
 }
