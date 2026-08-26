@@ -6,6 +6,7 @@ from datetime import datetime, UTC
 
 
 def format_datetime(value):
+    cleaned = value.strip().replace("Z", "+00:00") if value else None
     try:
         return datetime.fromisoformat(value)
     except TypeError:
