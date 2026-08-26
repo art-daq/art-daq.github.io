@@ -177,6 +177,30 @@
                 <span class="duration-{{repo.test_single.createdAt | get_time_class}}">
                     {{repo.test_single.createdAt | format_time}}
                 </span>
+
+                {% if repo.integtest_summary %}
+                <br/>
+                {{repo.integtest_summary.job_count}} Jobs total
+                <br />
+                {% for job in repo.integtest_summary.failed_jobs %}
+                <span class="status-{{ job.conclusion }}">
+                    Failed: {{ job.job }}
+                </span>
+                <br />
+                {% endfor %}
+                {% for job in repo.integtest_summary.skipped_jobs %}
+                <span class="status-{{ job.conclusion }}">
+                    Skipped: {{ job.job }}
+                </span>
+                <br />
+                {% endfor %}
+                {% for job in repo.integtest_summary.cancelled_jobs %}
+                <span class="status-{{ job.conclusion }}">
+                    Cancelled: {{ job.job }}
+                </span>
+                <br />
+                {% endfor %}
+                {% endif %}
                 {% endif %}
             </td>
             <td>

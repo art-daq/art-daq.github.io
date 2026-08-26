@@ -150,9 +150,9 @@ for REPO in "${packages_with_ci[@]}"; do
     WHITESPACE_STATUS=$(gh run list -R "$FULL_NAME" -b "$branch" --limit 1 --json conclusion,createdAt,event,name,status,updatedAt,url --workflow git-whitespace.yml -q '.[0]')
     INTEGTEST_STATUS=$(gh run list -R "$FULL_NAME" -b "$branch" --limit 1 --json conclusion,createdAt,databaseId,event,name,status,updatedAt,url --workflow artdaq-integration-tests.yml -q '.[0]')
     INTEGTEST_RUN_ID=$(echo "$INTEGTEST_STATUS" | jq -r '.databaseId')
-    echo "Calling get_workflow_summary for $FULL_NAME run ID $INTEGTEST_RUN_ID"
-    INTEGTEST_SUMMARY=`get_workflow_summary $FULL_NAME $INTEGTEST_RUN_ID`
-    echo "Integration test summary: $INTEGTEST_SUMMARY"
+    if [[ "x$INTEGTEST_RUN_ID" != "x" ]]; then
+      INTEGTEST_SUMMARY=`get_workflow_summary $FULL_NAME $INTEGTEST_RUN_ID`
+    fi
 
     #echo "Reset inactivity timers"
     gh api -X PUT "repos/$FULL_NAME/actions/workflows/artdaq-develop-cpp-ci.yml/enable"
