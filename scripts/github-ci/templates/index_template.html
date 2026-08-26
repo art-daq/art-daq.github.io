@@ -185,7 +185,7 @@
                     </summary>
                     {% for job in repo.integtest_summary.jobs %}
                     <span class="status-{{ job.conclusion }}">
-                        {{ integtest_job_name(job.job) }}: {{ job.conclusion }}
+                        {{ job.job | integtest_job_name }}: {{ job.conclusion }}
                     </span>
                     <span class="duration-{{job.createdAt | get_duration_class(job.updatedAt)}}">
                         {{job.createdAt | format_duration(job.updatedAt)}}
