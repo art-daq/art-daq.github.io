@@ -8,7 +8,9 @@ from datetime import datetime, UTC
 def format_datetime(value):
     cleaned = value.strip().replace("Z", "+00:00") if value else None
     try:
-        return datetime.fromisoformat(cleaned)
+        parsed = datetime.fromisoformat(cleaned)
+        print(f"Parsed datetime: {parsed}")
+        return parsed
     except TypeError:
         return datetime.now(UTC)
 
@@ -62,6 +64,7 @@ def format_duration(time_started, time_ended):
     dtime_started = format_datetime(time_started)
     dtime_ended = format_datetime(time_ended)
     diff = dtime_ended - dtime_started
+    print(f"Duration: {diff.total_seconds()} seconds")
     if diff.total_seconds() < 60:
         return f"in {diff.total_seconds():.0f} s"
     if diff.total_seconds() < 3600:
