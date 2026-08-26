@@ -1,5 +1,53 @@
 #!/bin/bash
 
+function get_workflow_summary() {
+
+REPO=$1
+RUN_ID=$2
+
+WORKFLOW_DETAILS=$(gh api /repos/$REPO/actions/runs/${RUN_ID})
+
+WORKFLOW_NAME=$(echo "$WORKFLOW_DETAILS" | jq -r '.name')
+ACTOR_LOGIN=$(echo "$WORKFLOW_DETAILS" | jq -r '.actor.login')
+EVENT_TYPE=$(echo "$WORKFLOW_DETAILS" | jq -r '.event')
+HTML_URL=$(echo "$WORKFLOW_DETAILS" | jq -r '.html_url')
+
+gh api /repos/$REPO/actions/runs/${RUN_ID}/jobs \
+    | jq --arg workflow   "$WORKFLOW_NAME"   \
+         --arg actor      "$ACTOR_LOGIN"     \
+         --arg event      "$EVENT_TYPE"      \
+         --arg html_url   "$HTML_URL" '
+def job_summary(status):
+  [.jobs[]
+   | select(.conclusion == status)
+   | {
+       job: .name,
+       conclusion: .conclusion
+     }
+  ];
+
+def job_count:
+  [.jobs[]
+    | {
+       job: .name,
+       conclusion: .conclusion
+     }
+  ] | length;
+
+{
+  workflow:   $workflow,
+  actor:      $actor,
+  event:      $event,
+  html_url:   $html_url,
+  job_count:  job_count,
+  failed_jobs:    job_summary("failure"),
+  skipped_jobs:   job_summary("skipped"),
+  cancelled_jobs: job_summary("cancelled")
+}
+'
+
+}
+
 export DEVLINE="develop"
 
 # Store list of packages from repo.sh as packages_with_ci
@@ -102,8 +150,8 @@ for REPO in "${packages_with_ci[@]}"; do
     WHITESPACE_STATUS=$(gh run list -R "$FULL_NAME" -b "$branch" --limit 1 --json conclusion,createdAt,event,name,status,updatedAt,url --workflow git-whitespace.yml -q '.[0]')
     INTEGTEST_STATUS=$(gh run list -R "$FULL_NAME" -b "$branch" --limit 1 --json conclusion,createdAt,databaseId,event,name,status,updatedAt,url --workflow artdaq-integration-tests.yml -q '.[0]')
     INTEGTEST_RUN_ID=$(echo "$INTEGTEST_STATUS" | jq -r '.databaseId')
-    echo "Calling get_workflow_summary.sh for $FULL_NAME run ID $INTEGTEST_RUN_ID"
-    INTEGTEST_SUMMARY=$(get_workflow_summary.sh $FULL_NAME $INTEGTEST_RUN_ID)
+    echo "Calling get_workflow_summary for $FULL_NAME run ID $INTEGTEST_RUN_ID"
+    INTEGTEST_SUMMARY=`get_workflow_summary $FULL_NAME $INTEGTEST_RUN_ID`
     echo "Integration test summary: $INTEGTEST_SUMMARY"
 
     #echo "Reset inactivity timers"
