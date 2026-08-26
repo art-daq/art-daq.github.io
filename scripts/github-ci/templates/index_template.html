@@ -190,9 +190,6 @@
                     <span class="duration-{{job.createdAt | get_duration_class(job.updatedAt)}}">
                         {{job.createdAt | format_duration(job.updatedAt)}}
                     </span>
-                    <span class="duration-{{job.createdAt | get_time_class}}">
-                        {{job.createdAt | format_time}}
-                    </span>
                     <br />
                     {% endfor %}
                 </details>
