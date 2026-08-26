@@ -179,21 +179,23 @@
                 </span>
 
                 {% if repo.integtest_summary %}
-                <br />
-                {{repo.integtest_summary.job_count}} Jobs total
-                <br />
-                {% for job in repo.integtest_summary.jobs %}
-                <span class="status-{{ job.conclusion }}">
-                    {{ job.job }}: {{ job.conclusion }}
-                </span>
-                <span class="duration-{{job.createdAt | get_duration_class(job.updatedAt)}}">
-                    {{job.createdAt | format_duration(job.updatedAt)}}
-                </span>
-                <span class="duration-{{job.createdAt | get_time_class}}">
-                    {{job.createdAt | format_time}}
-                </span>
-                <br />
-                {% endfor %}
+                <details>
+                    <summary>
+                        {{repo.integtest_summary.job_count}} Jobs total
+                    </summary>
+                    {% for job in repo.integtest_summary.jobs %}
+                    <span class="status-{{ job.conclusion }}">
+                        {{ job.job }}: {{ job.conclusion }}
+                    </span>
+                    <span class="duration-{{job.createdAt | get_duration_class(job.updatedAt)}}">
+                        {{job.createdAt | format_duration(job.updatedAt)}}
+                    </span>
+                    <span class="duration-{{job.createdAt | get_time_class}}">
+                        {{job.createdAt | format_time}}
+                    </span>
+                    <br />
+                    {% endfor %}
+                </details>
                 {% endif %}
                 {% endif %}
             </td>

@@ -22,8 +22,8 @@ def job_summary:
    | {
        job: .name,
        conclusion: .conclusion,
-       createdAt: .createdAt,
-       updatedAt: .updatedAt,
+       createdAt: .started_at,
+       updatedAt: .completed_at,
      }
   ];
 
