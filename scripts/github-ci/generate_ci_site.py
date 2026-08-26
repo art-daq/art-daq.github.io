@@ -73,7 +73,7 @@ def format_duration(time_started, time_ended):
 def integtest_job_name(job):
     match = re.search(r"Run Integration tests / run_integ_tests \((.*?)\)", job)
     if match:
-        return match.group()
+        return match.group(1)
     return job
 
 def generate_site(json_input_path):
