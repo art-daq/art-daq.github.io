@@ -76,6 +76,7 @@ def integtest_job_name(job):
         return match.group(1)
     return job
 
+
 def generate_site(json_input_path):
     """Render html files from templates to generate the site."""
     with open(json_input_path, "r") as f:
