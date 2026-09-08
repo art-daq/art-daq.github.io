@@ -115,7 +115,7 @@ for REPO in "${packages_with_ci[@]}"; do
   gh repo clone $FULL_NAME $REPO -- --no-checkout --filter=blob:none &>/dev/null
   if [ -d $REPO ];then
     cd $REPO
-    BRANCHES=`git branch -r |grep -vE 'origin/(HEAD|main|stable|develop|artdaq/Spack0\.28|artdaq/Spack1\.1)$'|wc -l`
+    BRANCHES=`git branch -r |grep -vE 'origin/(HEAD|main|stable|develop|artdaq/Spack0\.28|artdaq/Spack1\.1|mu2e/ots_ops)$'|wc -l`
     cd ..
   fi
   branch=`git branch -a|grep origin/HEAD|cut -d'>' -f'2'|sed 's|\s*origin/||'`
