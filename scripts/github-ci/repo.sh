@@ -39,6 +39,7 @@ packages_without_ci=(
     "otsdaq-suite"
     ".github"
     "art-daq.github.io"
+    "daq-docker"
 )
 
 packages=(
