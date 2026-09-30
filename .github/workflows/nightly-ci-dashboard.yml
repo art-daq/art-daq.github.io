@@ -31,67 +31,13 @@ jobs:
         echo "otsdaq_lcov_html_report_path=otsdaq_lcov_report" >> "$GITHUB_OUTPUT"
         echo "artdaq_doxy_html_path=artdaq_doxygen" >> "$GITHUB_OUTPUT"
         echo "otsdaq_doxy_html_path=otsdaq_doxygen" >> "$GITHUB_OUTPUT"
-    - name: Get workflow run IDs
-      id: run_ids
+    - name: Download artifacts
+      id: download
       run: |
-        artdaq_doxy_id=$(gh run list --repo art-daq/artdaq -e schedule \
-                              --workflow "artdaq-develop-cpp-ci.yml" \
-                              --limit 1 --status success \
-                              --json databaseId --jq '.[0].databaseId')
-        otsdaq_doxy_id=$(gh run list --repo art-daq/otsdaq -e schedule \
-                                   --workflow "otsdaq-develop-cpp-ci.yml" \
-                                   --limit 1 --status success \
-                                   --json databaseId --jq '.[0].databaseId')
-        artdaq_lcov_id=$(gh run list --repo art-daq/.github \
-                              --workflow "Create artdaq LCOV coverage report" \
-                              --limit 1 --status success \
-                              --json databaseId --jq '.[0].databaseId')
-        otsdaq_lcov_id=$(gh run list --repo art-daq/.github \
-                              --workflow "Create otsdaq LCOV coverage report" \
-                              --limit 1 --status success \
-                              --json databaseId --jq '.[0].databaseId')
-        echo "artdaq_doxy_id=$artdaq_doxy_id" | tee -a "$GITHUB_OUTPUT"
-        echo "otsdaq_doxy_id=$otsdaq_doxy_id" | tee -a "$GITHUB_OUTPUT"
-        echo "artdaq_lcov_id=$artdaq_lcov_id" | tee -a "$GITHUB_OUTPUT"
-        echo "otsdaq_lcov_id=$otsdaq_lcov_id" | tee -a "$GITHUB_OUTPUT"
-
-    - name: Fetch artdaq Doxygen docs
-      uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c
-      with:
-        name: doxygen
-        github-token: ${{ secrets.BOT_CI_ISSUES }}
-        repository: art-daq/artdaq
-        path: ${{ steps.set_paths.outputs.artdaq_doxy_html_path }}
-        run-id: ${{ steps.run_ids.outputs.artdaq_doxy_id }}
-
-    - name: Fetch otsdaq Doxygen docs
-      uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c
-      with:
-        name: doxygen
-        github-token: ${{ secrets.BOT_CI_ISSUES }}
-        repository: art-daq/otsdaq
-        run-id: ${{ steps.run_ids.outputs.otsdaq_doxy_id }}
-        path: ${{ steps.set_paths.outputs.otsdaq_doxy_html_path }}
-
-    - name: Download artdaq lcov html report
-      id: artdaq_download_lcov
-      uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c
-      with:
-        name: artdaq_code_coverage
-        github-token: ${{ secrets.BOT_CI_ISSUES }}
-        path: ${{ steps.set_paths.outputs.artdaq_lcov_html_report_path }}
-        run-id: ${{ steps.run_ids.outputs.artdaq_lcov_id }}
-        repository: "art-daq/.github"
-
-    - name: Download otsdaq lcov html report
-      id: otsdaq_download_lcov
-      uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c
-      with:
-        name: otsdaq_code_coverage
-        github-token: ${{ secrets.BOT_CI_ISSUES }}
-        path: ${{ steps.set_paths.outputs.otsdaq_lcov_html_report_path }}
-        run-id: ${{ steps.run_ids.outputs.otsdaq_lcov_id }}
-        repository: "art-daq/.github"
+        gh run download --repo art-daq/artdaq -n doxygen -D ${{ steps.set_paths.outputs.artdaq_doxy_html_path }}
+        gh run download --repo art-daq/otsdaq -n doxygen -D ${{ steps.set_paths.outputs.otsdaq_doxy_html_path }}
+        gh run download --repo art-daq/.github -n artdaq_code_coverage -D ${{ steps.set_paths.outputs.artdaq_lcov_html_report_path }}
+        gh run download --repo art-daq/.github -n otsdaq_code_coverage -D ${{ steps.set_paths.outputs.otsdaq_lcov_html_report_path }}
 
     - name: Checkout art-daq.github.io
       uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
