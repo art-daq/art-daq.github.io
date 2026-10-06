@@ -79,6 +79,7 @@
             <th>Develop Build Status</th>
             <th>Single-Pkg Build Status</th>
             <th>Single-Pkg Test Status</th>
+            <th>DUNE Clang-Tidy Status</th>
             <th>Integration Test Status</th>
             <th>Code Format Status</th>
             <th>Git Whitespace Check Status</th>
@@ -157,6 +158,25 @@
                 </span>
                 <span class="duration-{{repo.test_single.createdAt | get_time_class}}">
                     {{repo.test_single.createdAt | format_time}}
+                </span>
+                {% endif %}
+            </td>
+            <td>
+                {% if repo.clang_tidy %}
+                <a href="{{ repo.clang_tidy.url }}">
+                    <span class="status-{{ repo.clang_tidy.conclusion }}">
+                        {% if repo.clang_tidy.conclusion | length %}
+                        {{ repo.clang_tidy.conclusion | capitalize }}
+                        {% else %}
+                        {{ repo.clang_tidy.status | capitalize }}
+                        {% endif %}
+                    </span>
+                </a>
+                <span class="duration-{{repo.clang_tidy.createdAt | get_duration_class(repo.clang_tidy.updatedAt)}}">
+                    {{repo.clang_tidy.createdAt | format_duration(repo.clang_tidy.updatedAt)}}
+                </span>
+                <span class="duration-{{repo.clang_tidy.createdAt | get_time_class}}">
+                    {{repo.clang_tidy.createdAt | format_time}}
                 </span>
                 {% endif %}
             </td>
@@ -254,6 +274,7 @@
                     {{ repo.branches }}
                 </a>
             </td>
+            <td></td>
             <td></td>
             <td></td>
             <td></td>

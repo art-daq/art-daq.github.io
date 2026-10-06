@@ -140,12 +140,12 @@ for REPO in "${packages_with_ci[@]}"; do
     gh project item-add "$PROJECT_NUMBER" --owner "$ORG" --url "$URL" >/dev/null || true
   done
 
-  if [[ "$REPO" =~ "artdaq" ]] || [[ "$REPO" =~ "trace" ]]; then
     #echo "Get most recent single-repo CI build status"
-    BUILD_DEVELOP_STATUS=$(gh run list -R "$FULL_NAME" -b "$branch" --limit 1 --json conclusion,createdAt,event,name,status,updatedAt,url --workflow artdaq-develop-cpp-ci.yml -q '.[0]')
-    BUILD_SINGLE_STATUS=$(gh run list -R "$FULL_NAME" -b "$branch" --limit 1 --json conclusion,createdAt,event,name,status,updatedAt,url --workflow artdaq-build-single-pkg.yml -q '.[0]')
-    TEST_SINGLE_STATUS=$(gh run list -R "$FULL_NAME" -b "$branch" --limit 1 --json conclusion,createdAt,event,name,status,updatedAt,url --workflow artdaq-test-single-pkg.yml -q '.[0]')
-    FORMAT_STATUS=$(gh run list -R "$FULL_NAME" -b "$branch" --limit 1 --json conclusion,createdAt,event,name,status,updatedAt,url --workflow artdaq-format-single-pkg.yml -q '.[0]')
+    BUILD_DEVELOP_STATUS=$(gh run list -R "$FULL_NAME" -b "$branch" --limit 1 --json conclusion,createdAt,event,name,status,updatedAt,url --workflow develop-cpp-ci.yml -q '.[0]')
+    BUILD_SINGLE_STATUS=$(gh run list -R "$FULL_NAME" -b "$branch" --limit 1 --json conclusion,createdAt,event,name,status,updatedAt,url --workflow build-single-pkg.yml -q '.[0]')
+    TEST_SINGLE_STATUS=$(gh run list -R "$FULL_NAME" -b "$branch" --limit 1 --json conclusion,createdAt,event,name,status,updatedAt,url --workflow test-single-pkg.yml -q '.[0]')
+    CLANG_TIDY_STATUS=$(gh run list -R "$FULL_NAME" -b "$branch" --limit 1 --json conclusion,createdAt,event,name,status,updatedAt,url --workflow tidy-single-pkg.yml -q '.[0]')
+    FORMAT_STATUS=$(gh run list -R "$FULL_NAME" -b "$branch" --limit 1 --json conclusion,createdAt,event,name,status,updatedAt,url --workflow format-single-pkg.yml -q '.[0]')
     WHITESPACE_STATUS=$(gh run list -R "$FULL_NAME" -b "$branch" --limit 1 --json conclusion,createdAt,event,name,status,updatedAt,url --workflow git-whitespace.yml -q '.[0]')
     INTEGTEST_STATUS=$(gh run list -R "$FULL_NAME" -b "$branch" --limit 1 --json conclusion,createdAt,databaseId,event,name,status,updatedAt,url --workflow artdaq-integration-tests.yml -q '.[0]')
     INTEGTEST_RUN_ID=$(echo "$INTEGTEST_STATUS" | jq -r '.databaseId')
@@ -154,33 +154,19 @@ for REPO in "${packages_with_ci[@]}"; do
     fi
 
     #echo "Reset inactivity timers"
-    gh api -X PUT "repos/$FULL_NAME/actions/workflows/artdaq-develop-cpp-ci.yml/enable"
-    gh api -X PUT "repos/$FULL_NAME/actions/workflows/artdaq-build-single-pkg.yml/enable"
-    gh api -X PUT "repos/$FULL_NAME/actions/workflows/artdaq-test-single-pkg.yml/enable"
-    gh api -X PUT "repos/$FULL_NAME/actions/workflows/artdaq-format-single-pkg.yml/enable"
+    gh api -X PUT "repos/$FULL_NAME/actions/workflows/develop-cpp-ci.yml/enable"
+    gh api -X PUT "repos/$FULL_NAME/actions/workflows/build-single-pkg.yml/enable"
+    gh api -X PUT "repos/$FULL_NAME/actions/workflows/test-single-pkg.yml/enable"
+    gh api -X PUT "repos/$FULL_NAME/actions/workflows/tidy-single-pkg.yml/enable"
+    gh api -X PUT "repos/$FULL_NAME/actions/workflows/format-single-pkg.yml/enable"
     gh api -X PUT "repos/$FULL_NAME/actions/workflows/artdaq-integration-tests.yml/enable"
     gh api -X PUT "repos/$FULL_NAME/actions/workflows/git-whitespace.yml/enable"
-  else
-    #echo "Get most recent single-repo CI build status"
-    BUILD_DEVELOP_STATUS=$(gh run list -R "$FULL_NAME" -b "$branch" --limit 1 --json conclusion,createdAt,event,name,status,updatedAt,url --workflow otsdaq-develop-cpp-ci.yml -q '.[0]')
-    BUILD_SINGLE_STATUS=$(gh run list -R "$FULL_NAME" -b "$branch" --limit 1 --json conclusion,createdAt,event,name,status,updatedAt,url --workflow otsdaq-build-single-pkg.yml -q '.[0]')
-    TEST_SINGLE_STATUS=$(gh run list -R "$FULL_NAME" -b "$branch" --limit 1 --json conclusion,createdAt,event,name,status,updatedAt,url --workflow otsdaq-test-single-pkg.yml -q '.[0]')
-    FORMAT_STATUS=$(gh run list -R "$FULL_NAME" -b "$branch" --limit 1 --json conclusion,createdAt,event,name,status,updatedAt,url --workflow otsdaq-format-single-pkg.yml -q '.[0]')
-    WHITESPACE_STATUS=$(gh run list -R "$FULL_NAME" -b "$branch" --limit 1 --json conclusion,createdAt,event,name,status,updatedAt,url --workflow git-whitespace.yml -q '.[0]')
-    INTEGTEST_STATUS=null
-    INTEGTEST_SUMMARY=null
 
-    #echo "Reset inactivity timers"
-    gh api -X PUT "repos/$FULL_NAME/actions/workflows/otsdaq-develop-cpp-ci.yml/enable"
-    gh api -X PUT "repos/$FULL_NAME/actions/workflows/otsdaq-build-single-pkg.yml/enable"
-    gh api -X PUT "repos/$FULL_NAME/actions/workflows/otsdaq-test-single-pkg.yml/enable"
-    gh api -X PUT "repos/$FULL_NAME/actions/workflows/otsdaq-format-single-pkg.yml/enable"
-    gh api -X PUT "repos/$FULL_NAME/actions/workflows/git-whitespace.yml/enable"
-  fi
 
   BUILD_DEVELOP_STATUS=${BUILD_DEVELOP_STATUS:-null}
   BUILD_SINGLE_STATUS=${BUILD_SINGLE_STATUS:-null}
   TEST_SINGLE_STATUS=${TEST_SINGLE_STATUS:-null}
+  CLANG_TIDY_STATUS=${CLANG_TIDY_STATUS:-null}
   FORMAT_STATUS=${FORMAT_STATUS:-null}
   WHITESPACE_STATUS=${WHITESPACE_STATUS:-null}
   INTEGTEST_STATUS=${INTEGTEST_STATUS:-null}
@@ -199,6 +185,7 @@ for REPO in "${packages_with_ci[@]}"; do
     --argjson build_develop "$BUILD_DEVELOP_STATUS" \
     --argjson build_single "$BUILD_SINGLE_STATUS" \
     --argjson test_single "$TEST_SINGLE_STATUS" \
+    --argjson clang_tidy "$CLANG_TIDY_STATUS" \
     --argjson format "$FORMAT_STATUS" \
     --argjson whitespace "$WHITESPACE_STATUS" \
     --argjson integtest "$INTEGTEST_STATUS" \
@@ -215,6 +202,7 @@ for REPO in "${packages_with_ci[@]}"; do
       build_develop: $build_develop,
       build_single: $build_single,
       test_single: $test_single,
+      clang_tidy: $clang_tidy,
       format: $format,
       whitespace: $whitespace,
       integtest: $integtest,
@@ -256,12 +244,7 @@ for REPO in "${packages_without_ci[@]}"; do
   PRS_URL=$(echo "https://github.com/$ORG/$REPO/pulls")
   REPO_INFO=$(gh repo view "$FULL_NAME" --json isPrivate,updatedAt)
 
-  FORMAT_STATUS=
-  if [[ "$REPO" =~ "artdaq" ]]; then
-    FORMAT_STATUS=$(gh run list -R "$FULL_NAME" --limit 1 --json conclusion,createdAt,event,name,status,updatedAt,url --workflow artdaq-format-single-pkg.yml -q '.[0]')
-  elif [[ "$REPO" =~ "otsdaq" ]]; then
-    FORMAT_STATUS=$(gh run list -R "$FULL_NAME" --limit 1 --json conclusion,createdAt,event,name,status,updatedAt,url --workflow otsdaq-format-single-pkg.yml -q '.[0]')
-  fi
+  FORMAT_STATUS=$(gh run list -R "$FULL_NAME" --limit 1 --json conclusion,createdAt,event,name,status,updatedAt,url --workflow format-single-pkg.yml -q '.[0]')
   WHITESPACE_STATUS=$(gh run list -R "$FULL_NAME" --limit 1 --json conclusion,createdAt,event,name,status,updatedAt,url --workflow git-whitespace.yml -q '.[0]')
 
   FORMAT_STATUS=${FORMAT_STATUS:-null}
@@ -282,7 +265,7 @@ for REPO in "${packages_without_ci[@]}"; do
   done
 
   #echo "Reset inactivity timers"
-  gh api -X PUT "repos/$FULL_NAME/actions/workflows/artdaq-format-single-pkg.yml/enable"
+  gh api -X PUT "repos/$FULL_NAME/actions/workflows/format-single-pkg.yml/enable"
   gh api -X PUT "repos/$FULL_NAME/actions/workflows/git-whitespace.yml/enable"
 
   #echo "Prepare JSON fragment"
